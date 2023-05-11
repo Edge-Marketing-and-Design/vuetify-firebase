@@ -7,12 +7,18 @@ project_root=$(echo "$actual_dir" | awk '{gsub(/node_modules.*$/, ""); print}')
 
 
 # define the source and destination directories
-source_dir="./"
-destination_dir="$project_root/src/"
+source_dir="./src/"
+destination_dir="$project_root/"
 
 # use rsync to copy files from the source to the destination
 rsync -av --ignore-existing "$source_dir" "$destination_dir"
 
+# Overwrite app.vue Once
+if [ ! -f "$project_root/app.vue.flg" ]; then
+  cp "./src/app.vue" "$project_root/app.vue" 
+  # If the file does not exist, create it and add the rules_version line
+  touch "$project_root/app.vue.flg";
+fi
 
 # Overwrite Nuxt Config Once
 if [ ! -f "$project_root/nuxt.config.flg" ]; then
