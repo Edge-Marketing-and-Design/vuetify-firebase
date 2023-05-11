@@ -1,0 +1,17 @@
+{
+  "name": "@edgedev/vuetify-firebase",
+  "version": "1.0.0",
+  "description": "Vuetify 3 components using @edgedev/firebase",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "bash ./postinstall.sh"
+  },
+  "author": "Seth Fischer",
+  "license": "ISC",
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.38.6",
+    "@types/node": "^20.1.2",
+    "eslint": "^8.40.0",
+    "typescript": "^5.0.4"
+  }
+}
