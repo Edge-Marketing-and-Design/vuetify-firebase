@@ -13,7 +13,6 @@ export default defineNuxtConfig({
   components: {
     dirs: [
       { path: '~/components/formSubtypes', global: true, prefix: 'form-subtypes' },
-      { path: '~/components/submitTemplates', global: true, prefix: 'submit-templates' },
       '~/components',
     ],
   },

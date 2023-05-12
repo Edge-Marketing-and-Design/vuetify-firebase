@@ -13,17 +13,14 @@ onMounted(() => {
     changeTheme('light')
   }
 })
-const edgeFirebase = inject('edgeFirebase')
+// const edgeFirebase = inject('edgeFirebase')
 </script>
 
 <template>
   <v-app>
-    <top-menu v-if="edgeFirebase.user.loggedIn" />
-    <side-menu v-if="edgeFirebase.user.loggedIn" />
     <v-main>
       <NuxtPage />
     </v-main>
-    <bottom-menu v-if="edgeFirebase.user.loggedIn" />
   </v-app>
 </template>
 
