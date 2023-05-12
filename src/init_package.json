@@ -24,7 +24,7 @@
     "dependencies": {
         "@chenfengyuan/vue-number-input": "2",
         "@edgedev/vuetify-firebase": "^1.0.4",
-        "@edgedev/firebase": "^1.8.5",
+        "@edgedev/firebase": "latest",
         "vue-json-viewer": "3"
     }
 }

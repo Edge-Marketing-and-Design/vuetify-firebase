@@ -1,6 +1,6 @@
 {
   "name": "@edgedev/vuetify-firebase",
-  "version": "1.0.16",
+  "version": "1.0.20",
   "description": "Vuetify 3 components using @edgedev/firebase",
   "main": "index.js",
   "scripts": {

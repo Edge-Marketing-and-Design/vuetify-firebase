@@ -2,7 +2,7 @@
 mv ./npmrc.tmp ./.npmrc
 mv ./env.tmp ./.env
 mv ./init_package.json ./package.json
-pnpm install --shamefully-hoist=true --strict-peer-dependencies=false
+pnpm install --shamefully-hoist=true --strict-peer-dependencies=false --unsafe-perm=true --side-effects-cache=false --ignore-scripts=false
 
 # Prompt for the project ID
 echo "Please enter your Firebase project ID:"
@@ -43,3 +43,5 @@ fi
 if [ -f ./firestore.rules.temp ]; then
   mv ./firestore.rules.temp ./firestore.rules
 fi
+
+npm --prefix ./functions install
