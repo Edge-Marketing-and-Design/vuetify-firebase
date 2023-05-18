@@ -11,6 +11,7 @@ import edgeOrganizationSettings from './edgeOrganizationSettings.vue'
 import edgeOrganizationMembers from './edgeOrganizationMembers.vue'
 import helper from './common/helper.vue'
 import loggingIn from './common/loggingIn.vue'
+import edgeOrgSwitcher from './edgeOrgSwitcher.vue'
 
 export default {
   install: (app) => {
@@ -27,5 +28,6 @@ export default {
     app.component('EdgeOrganizationMembers', edgeOrganizationMembers)
     app.component('Helper', helper)
     app.component('LoggingIn', loggingIn)
+    app.component('EdgeOrgSwitcher', edgeOrgSwitcher)
   },
 }
