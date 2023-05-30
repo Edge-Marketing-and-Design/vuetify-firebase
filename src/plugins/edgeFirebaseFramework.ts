@@ -1,6 +1,7 @@
-import { getComponents } from '../testplugin2'
+import { getComponents } from '../testplugin'
 
-const framework = 'vuetify' // Or 'ionic'
+// eslint-disable-next-line prefer-const
+let framework: 'vuetify' | 'ionic' = 'ionic'
 
 let vuetify
 
