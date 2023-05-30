@@ -58,7 +58,7 @@ watch(currentMeta, async () => {
           :field-type="field.type"
           :rules="field.rules"
           :label="field.label"
-          parent-tracker-id="org-settings"
+          parent-tracker-id="profile-settings"
           :hint="field.hint"
           persistent-hint
         />
