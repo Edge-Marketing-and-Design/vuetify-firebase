@@ -1,7 +1,36 @@
 #!/bin/bash
+echo "Please select the framework:"
+options=("vuetify" "ionic" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "vuetify")
+            echo "You chose vuetify"
+            framework="vuetify"
+            break
+            ;;
+        "ionic")
+            echo "You chose ionic"
+            framework="ionic"
+            break
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
 mv ./npmrc.tmp ./.npmrc
 mv ./env.tmp ./.env
-mv ./init_package.json ./package.json
+mv ./project_files/init_package_${framework}.json ./package.json
+mv ./project_files/app_${framework}.vue ./app.vue
+
+[ ! -d "./composables/" ] && mkdir -p "./composables/"
+[ ! -d "./pages/" ] && mkdir -p "./pages/"
+
+rsync -av --ignore-existing "./project_files/composables_${framework}/" "./composables/"
+rsync -av --ignore-existing "./project_files/pages_${framework}/" "./pages/"
+
 pnpm install --shamefully-hoist=true --strict-peer-dependencies=false --unsafe-perm=true --side-effects-cache=false --ignore-scripts=false
 
 # Prompt for the project ID

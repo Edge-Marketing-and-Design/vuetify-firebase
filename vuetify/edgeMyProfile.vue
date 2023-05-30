@@ -1,6 +1,13 @@
 <script setup>
+const props = defineProps({
+  metaFields: {
+    type: Object,
+    required: true,
+  },
+})
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
+  meta: {},
   name: '',
   form: false,
   loaded: true,
@@ -8,7 +15,7 @@ const state = reactive({
 const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
-    edgeFirebase.setUserMeta({ name: state.name })
+    edgeFirebase.setUserMeta(state.meta)
     edgeState.changeTracker = {}
     state.loaded = false
     await nextTick()
@@ -16,15 +23,16 @@ const onSubmit = async (event) => {
   }
 }
 
-const currentName = computed(() => {
-  return edgeFirebase.user.meta.name
+const currentMeta = computed(() => {
+  return edgeFirebase.user.meta
 })
 
 onBeforeMount(() => {
-  state.name = currentName.value
+  state.meta = currentMeta.value
 })
-watch(currentName, async () => {
-  state.name = currentName.value
+
+watch(currentMeta, async () => {
+  state.meta = currentMeta.value
   edgeState.changeTracker = {}
   state.loaded = false
   await nextTick()
@@ -44,12 +52,14 @@ watch(currentName, async () => {
       </v-card-title>
       <v-card-text>
         <g-input
-          v-model="state.name"
-          field-type="text"
-          :rules="[edgeRules.required]"
-          label="Name"
+          v-for="field in props.metaFields"
+          :key="field.field"
+          v-model="state.meta[field.field]"
+          :field-type="field.type"
+          :rules="field.rules"
+          :label="field.label"
           parent-tracker-id="org-settings"
-          hint="Your name, shown in the user interface."
+          :hint="field.hint"
           persistent-hint
         />
       </v-card-text>

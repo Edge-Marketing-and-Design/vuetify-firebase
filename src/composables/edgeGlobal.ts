@@ -93,3 +93,51 @@ export const edgeLogOut = async (edgeFirebase: any) => {
   await edgeFirebase.logOut()
   await router.push('/app/login')
 }
+interface UserRoleType {
+  name: string
+  roles: { collectionPath: string; role: string }[]
+}
+
+interface RoleType {
+  collectionPath: string
+  role: string
+}
+
+export const orgUserRoles = (orgId: string) => {
+  orgId = orgId.replaceAll('/', '-')
+  const orgPath = `organizations-${orgId}`
+  // Create a copy of the data to avoid mutating the original array
+  const newData = JSON.parse(JSON.stringify(edgeState.userRoles))
+
+  // Iterate over each object in the array
+  for (let i = 0; i < newData.length; i++) {
+    const roles = newData[i].roles
+
+    // Iterate over each role in the roles array
+    for (let j = 0; j < roles.length; j++) {
+      const role = roles[j]
+
+      // Replace 'organizationDocPath' in the collectionPath property with orgName
+      role.collectionPath = role.collectionPath.replace(/organizationDocPath/g, orgPath)
+    }
+  }
+
+  return newData
+}
+
+export const getRoleName = (roles: RoleType[], orgId: string) => {
+  const userRoles: UserRoleType[] = orgUserRoles(orgId)
+  for (const user of userRoles) {
+    let match = true
+    for (const userRole of user.roles) {
+      if (!roles.some(role => role.collectionPath === userRole.collectionPath && role.role === userRole.role)) {
+        match = false
+        break // exit the loop as soon as a non-match is found
+      }
+    }
+    if (match) {
+      return user.name
+    }
+  }
+  return 'Unknown'
+}

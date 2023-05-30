@@ -4,6 +4,12 @@
 
 // TODO:  Finish user setup.
 // TODO:  Add error/success to join/add organization.
+
+// TODO: Put git in this folder in FormFling... merge ionic package with this one...
+// perhaps components keep name but are in seperate folders that a var uses to point to the correct folder.
+
+// TODO MAKE app.vue component differnt for ionic and vuetify
+// todo same with pages that get coppied into the project.
 const props = defineProps({
   item: {
     type: Object,
@@ -25,6 +31,12 @@ const state = reactive({
     submits: true,
   },
   deleteDialog: false,
+})
+
+const roleNamesOnly = computed(() => {
+  return edgeState.userRoles.map((role) => {
+    return role.name
+  })
 })
 
 const newItem = {
@@ -50,19 +62,12 @@ const addItem = () => {
   state.dialog = true
 }
 
-const getRole = (user) => {
-  const role = user.roles.find((role) => {
-    return role.collectionPath === edgeState.organizationDocPath.replaceAll('/', '-')
-  })
-  return role.role.charAt(0).toUpperCase() + role.role.slice(1)
-}
-
 const editItem = (item) => {
   state.currentTitle = item.name
   state.saveButton = 'Update User'
   state.workingItem = dupObject(item)
   state.workingItem.name = item.meta.name
-  state.workingItem.role = getRole(item)
+  state.workingItem.role = getRoleName(props.item.roles, edgeState.currentOrganization)
   const newItemKeys = Object.keys(newItem)
   newItemKeys.forEach((key) => {
     if (state.workingItem[key] === undefined) {
@@ -96,35 +101,8 @@ const disableTracking = computed(() => {
 const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
-    let roles = []
-    if (state.workingItem.role === 'User') {
-      roles = [
-        {
-          collectionPath: edgeState.organizationDocPath.replaceAll('/', '-'),
-          role: 'user',
-        },
-        {
-          collectionPath: `${edgeState.organizationDocPath.replaceAll('/', '-')}-sites`,
-          role: 'editor',
-        },
-        {
-          collectionPath: `${edgeState.organizationDocPath.replaceAll('/', '-')}-log`,
-          role: 'user',
-        },
-        {
-          collectionPath: `${edgeState.organizationDocPath.replaceAll('/', '-')}-apiKeys`,
-          role: 'editor',
-        },
-      ]
-    }
-    else {
-      roles = [
-        {
-          collectionPath: edgeState.organizationDocPath.replaceAll('/', '-'),
-          role: 'admin',
-        },
-      ]
-    }
+    const userRoles = orgUserRoles(edgeState.currentOrganization)
+    const roles = userRoles.find(role => role.name === state.workingItem.role).roles
     if (state.saveButton === 'Invite User') {
       edgeFirebase.addUser({ roles, meta: { name: state.workingItem.name, email: state.workingItem.email } })
     }
@@ -157,7 +135,6 @@ const onSubmit = async (event) => {
         <v-icon>mdi-account</v-icon>
       </v-avatar>
     </template>
-
     <v-list-item-title>
       {{ props.item.meta.name }}
       <v-chip v-if="props.item.userId === edgeFirebase.user.uid" size="small" color="success">
@@ -169,7 +146,7 @@ const onSubmit = async (event) => {
     </v-list-item-title>
     <v-list-item-subtitle>
       <v-chip size="small" color="primary">
-        {{ getRole(props.item) }}
+        {{ getRoleName(props.item.roles, edgeState.currentOrganization) }}
       </v-chip>
       <template v-if="!props.item.userId">
         <v-chip size="small" color="primary">
@@ -304,7 +281,7 @@ const onSubmit = async (event) => {
           <g-input
             v-model="state.workingItem.role"
             :disable-tracking="disableTracking"
-            :items="['Admin', 'User']"
+            :items="roleNamesOnly"
             field-type="select"
             :rules="[edgeRules.required]"
             label="Role"

@@ -1,0 +1,52 @@
+{
+    "name": "nuxt-app",
+    "private": true,
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "emulator": "nuxt dev --dotenv .env.dev",
+        "build-emulator": "nuxt generate --dotenv .env.dev"
+    },
+    "dependencies": {
+        "@edgedev/firebase": "^1.9.7",
+        "@microsoft/microsoft-graph-client": "^3.0.5",
+        "@unocss/reset": "~0.51.12",
+        "daisyui": "^2.51.6",
+        "luxon": "~3.3.0",
+        "sass": "~1.62.1",
+        "theme-change": "~2.5.0",
+        "unocss-preset-daisy": "^4.0.0"
+    },
+    "devDependencies": {
+        "@antfu/eslint-config": "^0.38.6",
+        "@capacitor/android": "^4.8.0",
+        "@capacitor/app": "^4.1.1",
+        "@capacitor/assets": "^2.0.4",
+        "@capacitor/cli": "^4.8.0",
+        "@capacitor/core": "^4.8.0",
+        "@capacitor/haptics": "^4.1.0",
+        "@capacitor/ios": "^4.8.0",
+        "@capacitor/keyboard": "^4.1.1",
+        "@capacitor/status-bar": "^4.1.1",
+        "@nuxt/devtools": "~0.3.2",
+        "@nuxtjs/color-mode": "~3.2.0",
+        "@nuxtjs/ionic": "latest",
+        "@types/luxon": "^3.3.0",
+        "@unocss/nuxt": "~0.50.8",
+        "@vite-pwa/nuxt": "~0.0.7",
+        "@vitejs/plugin-vue": "~4.1.0",
+        "@vueuse/nuxt": "~9.13.0",
+        "date-fns": "^2.30.0",
+        "eslint": "~8.38.0",
+        "firebase": "~9.19.1",
+        "firebase-functions": "^4.4.0",
+        "nuxt": "~3.4.3",
+        "openai": "~3.2.1",
+        "typescript": "~5.0.4",
+        "vitest": "~0.29.8",
+        "vue-the-mask": "~0.11.1"
+    }
+}

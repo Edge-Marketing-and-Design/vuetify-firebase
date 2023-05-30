@@ -1,5 +1,6 @@
 <script setup>
 const edgeFirebase = inject('edgeFirebase')
+
 const state = reactive({
   loaded: true,
 })

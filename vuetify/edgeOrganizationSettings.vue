@@ -1,6 +1,13 @@
 <script setup>
+const props = defineProps({
+  orgFields: {
+    type: Object,
+    required: true,
+  },
+})
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
+  data: {},
   org: '',
   form: false,
   loaded: true,
@@ -8,7 +15,7 @@ const state = reactive({
 const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
-    edgeFirebase.changeDoc('organizations', edgeState.currentOrganization, { name: state.org })
+    edgeFirebase.changeDoc('organizations', edgeState.currentOrganization, state.data)
     // getOrganizations(edgeFirebase)
     edgeState.changeTracker = {}
     state.loaded = false
@@ -16,17 +23,17 @@ const onSubmit = async (event) => {
     state.loaded = true
   }
 }
-const currentOrgName = computed(() => {
+const currentOrgData = computed(() => {
   if (objHas(edgeFirebase.data, edgeState.organizationDocPath) === false) {
     return ''
   }
-  return edgeFirebase.data[edgeState.organizationDocPath].name
+  return edgeFirebase.data[edgeState.organizationDocPath]
 })
 onBeforeMount(() => {
-  state.org = currentOrgName.value
+  state.data = currentOrgData.value
 })
-watch(currentOrgName, async () => {
-  state.org = currentOrgName.value
+watch(currentOrgData, async () => {
+  state.org = currentOrgData.value
   edgeState.changeTracker = {}
   state.loaded = false
   await nextTick()
@@ -46,12 +53,14 @@ watch(currentOrgName, async () => {
       </v-card-title>
       <v-card-text>
         <g-input
-          v-model="state.org"
-          field-type="text"
-          :rules="[edgeRules.required]"
-          label="Organization Name"
+          v-for="field in props.orgFields"
+          :key="field.field"
+          v-model="state.data[field.field]"
+          :field-type="field.type"
+          :rules="field.rules"
+          :label="field.label"
           parent-tracker-id="org-settings"
-          hint="A label for your organization, shown in the user interface."
+          :hint="field.hint"
           persistent-hint
         />
         <v-text-field

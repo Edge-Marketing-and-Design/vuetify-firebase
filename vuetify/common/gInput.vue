@@ -699,7 +699,6 @@ watch(modelValue, () => {
           <v-toolbar density="compact" color="transparent" flat>
             <v-toolbar-title>{{ props.label }}</v-toolbar-title>
             <v-spacer />
-
             <component :is="`form-subtypes-${props.subFieldType}`" v-model:items="modelValue" />
             <helper v-if="props.helper" :helper="props.helper" />
           </v-toolbar>
