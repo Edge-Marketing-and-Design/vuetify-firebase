@@ -1,4 +1,3 @@
-// DO NOT CHANGE THIS FILE
 export const edgeState = reactive({
   currentOrganization: '',
   organizationDocPath: '',
@@ -6,6 +5,7 @@ export const edgeState = reactive({
   changeTracker: {},
   user: null,
   preLoginRoute: '',
+  userRoles: [],
 })
 
 export const setOrganization = async (organization: string, edgeFirebase: any) => {
@@ -13,7 +13,13 @@ export const setOrganization = async (organization: string, edgeFirebase: any) =
     edgeState.changeTracker = {}
     localStorage.setItem('organizationID', organization)
     edgeState.currentOrganization = organization
+    globalState.sitesCollectionPath = `organizations/${organization}/sites`
+    globalState.sitesLogsCollectionPath = `organizations/${organization}/log`
+    globalState.apiKeysCollectionPath = `organizations/${organization}/apiKeys`
+    await edgeFirebase.startSnapshot(globalState.sitesCollectionPath)
+    await edgeFirebase.startSnapshot(globalState.apiKeysCollectionPath)
     await edgeFirebase.startUsersSnapshot(`organizations/${organization}`)
+    startLogSnapshot(72, edgeFirebase)
     edgeState.organizationDocPath = `organizations/${organization}`
   }
 }
@@ -93,6 +99,7 @@ export const edgeLogOut = async (edgeFirebase: any) => {
   await edgeFirebase.logOut()
   await router.push('/app/login')
 }
+
 interface UserRoleType {
   name: string
   roles: { collectionPath: string; role: string }[]
