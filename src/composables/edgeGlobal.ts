@@ -13,14 +13,11 @@ export const setOrganization = async (organization: string, edgeFirebase: any) =
     edgeState.changeTracker = {}
     localStorage.setItem('organizationID', organization)
     edgeState.currentOrganization = organization
-    globalState.sitesCollectionPath = `organizations/${organization}/sites`
-    globalState.sitesLogsCollectionPath = `organizations/${organization}/log`
-    globalState.apiKeysCollectionPath = `organizations/${organization}/apiKeys`
-    await edgeFirebase.startSnapshot(globalState.sitesCollectionPath)
-    await edgeFirebase.startSnapshot(globalState.apiKeysCollectionPath)
     await edgeFirebase.startUsersSnapshot(`organizations/${organization}`)
-    startLogSnapshot(72, edgeFirebase)
     edgeState.organizationDocPath = `organizations/${organization}`
+    if (typeof projectSetOrg !== 'undefined') {
+      await projectSetOrg(organization, edgeFirebase)
+    }
   }
 }
 

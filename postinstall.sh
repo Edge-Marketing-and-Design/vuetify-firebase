@@ -13,7 +13,6 @@ destination_dir="$project_root/"
 rsync -av --ignore-existing "$source_dir" "$destination_dir"
 
 cp "./src/composables/edgeGlobal.ts" "$project_root/composables/edgeGlobal.ts"
-cp "./src/composables/vuetify.ts" "$project_root/composables/vuetify.ts"
 
 
 # Update the auth middleware
