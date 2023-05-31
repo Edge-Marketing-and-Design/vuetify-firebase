@@ -1,6 +1,6 @@
 {
   "name": "@edgedev/firebase-framework",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "description": "Vuetify 3 components using @edgedev/firebase",
   "main": "index.js",
   "scripts": {

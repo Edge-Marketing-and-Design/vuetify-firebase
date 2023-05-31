@@ -1,6 +1,4 @@
 <script setup>
-import { resetValidation, validate, validateFields } from './fieldValidator'
-
 const props = defineProps({
   type: {
     type: String,
