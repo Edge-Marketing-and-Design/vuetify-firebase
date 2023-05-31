@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineProps, inject, reactive } from 'vue'
+import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
 
 const props = defineProps({
   metaFields: {

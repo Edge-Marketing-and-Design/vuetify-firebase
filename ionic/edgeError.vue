@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, reactive } from 'vue'
+import { defineProps, reactive, watch } from 'vue'
 
 const props = defineProps({
   error: {

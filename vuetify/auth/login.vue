@@ -1,4 +1,6 @@
 <script setup>
+import { inject, reactive } from 'vue'
+
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   form: false,

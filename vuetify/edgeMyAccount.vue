@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, reactive } from 'vue'
+import { computed, inject, onBeforeMount, reactive, watch } from 'vue'
 
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({

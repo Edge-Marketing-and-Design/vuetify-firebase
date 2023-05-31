@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, inject } from 'vue'
+import { defineProps, inject, watch } from 'vue'
 
 import login from './auth/login.vue'
 import register from './auth/register.vue'

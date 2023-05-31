@@ -1,4 +1,6 @@
 <script setup>
+import { defineProps, inject, onMounted, reactive } from 'vue'
+
 const props = defineProps({
   registrationCode: {
     type: String,

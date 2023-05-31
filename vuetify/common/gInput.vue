@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineProps, reactive } from 'vue'
+import { computed, defineProps, onBeforeMount, onMounted, reactive, watch } from 'vue'
 
 const props = defineProps({
   disableTracking: {
