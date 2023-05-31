@@ -28,20 +28,8 @@ edgeState.userRoles = [
     name: 'User',
     roles: [
       {
-        collectionPath: 'organizationDocPath',
+        collectionPath: edgeState.organizationDocPath.replaceAll('/', '-'),
         role: 'user',
-      },
-      {
-        collectionPath: 'organizationDocPath-sites',
-        role: 'editor',
-      },
-      {
-        collectionPath: 'organizationDocPath-log',
-        role: 'user',
-      },
-      {
-        collectionPath: 'organizationDocPath-apiKeys',
-        role: 'editor',
       },
     ],
   },

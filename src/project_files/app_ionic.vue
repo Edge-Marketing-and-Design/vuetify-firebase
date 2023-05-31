@@ -81,6 +81,27 @@ onMounted(async () => {
 const page = computed(() => {
   return route.nameedgeFirebase
 })
+
+edgeState.userRoles = [
+  {
+    name: 'Admin',
+    roles: [
+      {
+        collectionPath: 'organizationDocPath',
+        role: 'admin',
+      },
+    ],
+  },
+  {
+    name: 'User',
+    roles: [
+      {
+        collectionPath: edgeState.organizationDocPath.replaceAll('/', '-'),
+        role: 'user',
+      },
+    ],
+  },
+]
 </script>
 
 <template>

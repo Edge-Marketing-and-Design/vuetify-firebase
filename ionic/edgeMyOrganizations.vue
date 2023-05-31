@@ -165,7 +165,7 @@ watch(userMeta, async () => {
     <ion-item v-for="item in edgeState.organizations" :key="item.docId">
       <ion-label>
         <h2>{{ item.name }}</h2>
-        <ion-badge>{{ getRole(item.docId) }}</ion-badge>
+        <ion-badge> {{ getRoleName(edgeFirebase.user.roles, item.docId) }}</ion-badge>
       </ion-label>
       <ion-button slot="end" fill="solid" @click.stop="deleteConfirm(item)">
         Leave
