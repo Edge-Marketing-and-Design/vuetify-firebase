@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, inject, onMounted, reactive } from 'vue'
+import { defineProps, inject, onMounted, reactive, useRoute } from 'vue'
 
 const props = defineProps({
   registrationCode: {
