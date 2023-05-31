@@ -95,18 +95,11 @@ const addItem = () => {
   state.dialog = true
 }
 
-const getRole = (user) => {
-  const role = user.roles.find((role) => {
-    return role.collectionPath === edgeState.organizationDocPath.replaceAll('/', '-')
-  })
-  return role.role.charAt(0).toUpperCase() + role.role.slice(1)
-}
-
 const editItem = (item) => {
   state.saveButton = 'Update Member'
   state.workingItem = dupObject(item)
   state.workingItem.name = item.meta.name
-  state.workingItem.role = getRole(item)
+  state.workingItem.role = getRoleName(item.roles, edgeState.currentOrganization)
   const newItemKeys = Object.keys(newItem)
   newItemKeys.forEach((key) => {
     if (state.workingItem[key] === undefined) {
@@ -117,9 +110,7 @@ const editItem = (item) => {
 }
 
 const deleteConfirm = (item) => {
-  console.log(item)
-  console.log(getRole(item))
-  if (getRole(item) === 'Admin' && adminCount.value === 1) {
+  if (getRoleName(item.roles, edgeState.currentOrganization) === 'Admin' && adminCount.value === 1) {
     state.deleteButtons = [{
       text: 'OK',
       role: 'cancel',
@@ -205,7 +196,7 @@ watch(userMeta, async () => {
     <ion-item v-for="item in users" :key="item.docId">
       <ion-label class="ion-text-wrap" @click="editItem(item)">
         <h2>{{ item.meta.name }}</h2>
-        <ion-badge>{{ getRole(item) }}</ion-badge>
+        <ion-badge>{{ getRoleName(item.roles, edgeState.currentOrganization) }}</ion-badge>
         <ion-badge v-if="item.userId === edgeFirebase.user.uid" class="ml-2" color="secondary">
           You
         </ion-badge>

@@ -80,16 +80,8 @@ const joinOrg = () => {
   state.dialog = true
 }
 
-const getRole = (org) => {
-  const orgPath = `organizations/${org}`
-  const role = edgeFirebase.user.roles.find((role) => {
-    return role.collectionPath === orgPath.replaceAll('/', '-')
-  })
-  return role.role.charAt(0).toUpperCase() + role.role.slice(1)
-}
-
 const deleteConfirm = (item) => {
-  if (getRole(item.docId) === 'Admin') {
+  if (getRoleName(edgeFirebase.user.roles, item.docId) === 'Admin') {
     state.deleteButtons = [{
       text: 'OK',
       role: 'cancel',
@@ -117,7 +109,7 @@ const deleteAction = async (event) => {
     state.deleteDialog = false
     return
   }
-  if (getRole(state.workingItem.docId) === 'Admin') {
+  if (getRoleName(edgeFirebase.user.roles, state.workingItem.docId) === 'Admin') {
     state.deleteDialog = false
     return
   }
