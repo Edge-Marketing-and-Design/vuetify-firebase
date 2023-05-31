@@ -47,6 +47,7 @@
         "openai": "~3.2.1",
         "typescript": "~5.0.4",
         "vitest": "~0.29.8",
-        "vue-the-mask": "~0.11.1"
+        "vue-the-mask": "~0.11.1",
+        "vuetify": "^3.3.2"
     }
 }
