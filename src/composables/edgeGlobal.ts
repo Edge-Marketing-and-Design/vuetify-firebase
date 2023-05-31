@@ -1,3 +1,5 @@
+// DO NOT EDIT
+
 export const edgeState = reactive({
   currentOrganization: '',
   organizationDocPath: '',
@@ -7,6 +9,8 @@ export const edgeState = reactive({
   preLoginRoute: '',
   userRoles: [],
 })
+
+declare let projectSetOrg: ((organization: string, edgeFirebase: any) => Promise<void>) | undefined
 
 export const setOrganization = async (organization: string, edgeFirebase: any) => {
   if (organization) {
