@@ -1,4 +1,4 @@
-import { getComponents } from '../testplugin'
+import { getComponents } from '@edgedev/firebase-framework'
 
 // eslint-disable-next-line prefer-const
 let framework: 'vuetify' | 'ionic' = 'ionic'
