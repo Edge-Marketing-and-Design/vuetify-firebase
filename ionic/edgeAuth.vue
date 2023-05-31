@@ -1,4 +1,6 @@
 <script setup>
+import { computed, defineProps, inject, reactive } from 'vue'
+
 const props = defineProps({
   type: {
     type: String,
@@ -32,10 +34,12 @@ const props = defineProps({
     required: false,
     default: 'email',
   },
+  registrationCode: {
+    type: String,
+    default: '',
+  },
 })
 const edgeFirebase = inject('edgeFirebase')
-const config = useRuntimeConfig()
-const newOrgRegistration = config.public.registrationCode
 const state = reactive({
   loading: false,
   user: {
@@ -137,7 +141,7 @@ onBeforeMount(() => {
     })
   }
   state.registerProviderType = props.defaultProvider
-  state.user.registrationCode = newOrgRegistration
+  state.user.registrationCode = props.registrationCode
   resetValidation()
 })
 
@@ -152,7 +156,7 @@ watch(showRegistrationCode, async () => {
     state.user.dynamicDocumentFieldValue = ''
   }
   else {
-    state.user.registrationCode = newOrgRegistration
+    state.user.registrationCode = props.registrationCode
   }
 })
 

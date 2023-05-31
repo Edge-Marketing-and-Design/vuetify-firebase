@@ -1,6 +1,6 @@
 <script setup>
-// TODO - FOR REGISTRATION NEED TO HAVE META AS A PROP... AND CUSTOM RULES PASSED IN
-// SAME WITH PROFILE COMPONENT
+import { defineProps, inject } from 'vue'
+
 import login from './auth/login.vue'
 import register from './auth/register.vue'
 

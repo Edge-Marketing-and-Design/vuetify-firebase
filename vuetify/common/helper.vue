@@ -1,5 +1,7 @@
 <!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <script setup>
+import { computed, defineProps, reactive } from 'vue'
+
 const props = defineProps({
   helper: {
     type: String,

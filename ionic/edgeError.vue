@@ -1,4 +1,6 @@
 <script setup>
+import { defineProps, reactive } from 'vue'
+
 const props = defineProps({
   error: {
     type: String,

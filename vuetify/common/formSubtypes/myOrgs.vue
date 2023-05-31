@@ -1,4 +1,6 @@
 <script setup>
+import { defineProps, inject, reactive } from 'vue'
+
 const props = defineProps({
   item: {
     type: Object,
@@ -8,8 +10,12 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  passThroughProps: {
+    type: Object,
+    default: () => ({}),
+  },
 })
-const config = useRuntimeConfig()
+const config = props.passThroughProps
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   workingItem: {},

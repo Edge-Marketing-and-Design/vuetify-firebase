@@ -1,4 +1,6 @@
 <script setup>
+import { inject } from 'vue'
+
 const edgeFirebase = inject('edgeFirebase')
 </script>
 

@@ -1,4 +1,6 @@
 <script setup>
+import { computed, defineProps, inject, reactive } from 'vue'
+
 const props = defineProps({
   metaFields: {
     type: Object,

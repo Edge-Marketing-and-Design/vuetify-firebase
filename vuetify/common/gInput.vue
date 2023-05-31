@@ -1,4 +1,6 @@
 <script setup>
+import { computed, defineProps, reactive } from 'vue'
+
 const props = defineProps({
   disableTracking: {
     type: Boolean,
@@ -54,6 +56,10 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false,
+  },
+  passThroughProps: {
+    type: Object,
+    default: () => ({}),
   },
 })
 const emit = defineEmits(['update:modelValue'])
@@ -699,7 +705,7 @@ watch(modelValue, () => {
           <v-toolbar density="compact" color="transparent" flat>
             <v-toolbar-title>{{ props.label }}</v-toolbar-title>
             <v-spacer />
-            <component :is="`form-subtypes-${props.subFieldType}`" v-model:items="modelValue" />
+            <component :is="`form-subtypes-${props.subFieldType}`" v-model:items="modelValue" :pass-through-props="passThroughProps" />
             <helper v-if="props.helper" :helper="props.helper" />
           </v-toolbar>
           <v-list class="mt-0 pt-0" bg-color="transparent">
@@ -710,7 +716,7 @@ watch(modelValue, () => {
             >
               <template #item="{ element, index }">
                 <div>
-                  <component :is="`form-subtypes-${props.subFieldType}`" v-model:items="modelValue" :item="element" />
+                  <component :is="`form-subtypes-${props.subFieldType}`" v-model:items="modelValue" :item="element" :pass-through-props="passThroughProps" />
                   <v-fade-transition>
                     <v-alert v-if="isTracked && state.afterMount && (JSON.stringify(modelValue[index]) !== JSON.stringify(edgeState.changeTracker[state.trackerKey][state.objectListOriginalOrder[element.id]]))" class="mt-0 mb-3 text-caption" density="compact" variant="tonal" type="warning">
                       <v-row dense class="pa-0 ma-0">

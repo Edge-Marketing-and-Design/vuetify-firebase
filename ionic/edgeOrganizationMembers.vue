@@ -1,4 +1,6 @@
 <script setup>
+import { computed, defineProps, inject, reactive } from 'vue'
+
 const props = defineProps({
   title: {
     type: String,
@@ -28,13 +30,6 @@ const state = reactive({
   deleteMessage: '',
   deleteHeader: '',
   deleteButtons: [],
-})
-
-const config = useRuntimeConfig()
-
-const register = reactive({
-  registrationCode: config.public.registrationCode,
-  dynamicDocumentFieldValue: '',
 })
 
 const newItem = {

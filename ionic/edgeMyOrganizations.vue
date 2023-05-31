@@ -1,4 +1,6 @@
 <script setup>
+import { computed, defineProps, inject, reactive } from 'vue'
+
 const props = defineProps({
   title: {
     type: String,
@@ -8,6 +10,10 @@ const props = defineProps({
     type: Object,
     required: false,
     default: () => ({}),
+  },
+  registrationCode: {
+    type: String,
+    default: '',
   },
 })
 const edgeFirebase = inject('edgeFirebase')
@@ -24,10 +30,8 @@ const state = reactive({
   deleteButtons: [],
 })
 
-const config = useRuntimeConfig()
-
 const register = reactive({
-  registrationCode: config.public.registrationCode,
+  registrationCode: props.registrationCode,
   dynamicDocumentFieldValue: '',
 })
 
