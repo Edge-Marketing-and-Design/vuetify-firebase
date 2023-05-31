@@ -11,11 +11,11 @@ const props = defineProps({
     default: () => [],
   },
   passThroughProps: {
-    type: Object,
-    default: () => ({}),
+    type: [Number, String, Array, Object, Boolean],
+    required: false,
   },
 })
-const config = props.passThroughProps
+
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   workingItem: {},
@@ -76,7 +76,7 @@ const getRole = (org) => {
 }
 
 const register = reactive({
-  registrationCode: config.public.registrationCode,
+  registrationCode: props.passThroughProps,
   dynamicDocumentFieldValue: '',
 })
 

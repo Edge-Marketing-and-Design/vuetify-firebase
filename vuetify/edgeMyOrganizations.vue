@@ -1,5 +1,12 @@
 <script setup>
-import { computed, inject, reactive } from 'vue'
+import { computed, defineProps, inject, reactive, watch } from 'vue'
+
+const props = defineProps({
+  registrationCode: {
+    type: String,
+    default: '',
+  },
+})
 
 const edgeFirebase = inject('edgeFirebase')
 
@@ -30,6 +37,7 @@ watch(roles, async () => {
       label="My Organizations"
       parent-tracker-id="myOrgs"
       helper="<p>Organizations</p>"
+      :pass-through-props="props.registrationCode"
     />
   </div>
 </template>
