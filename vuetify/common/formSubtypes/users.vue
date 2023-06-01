@@ -1,5 +1,6 @@
 <script setup>
 import { computed, defineProps, inject, reactive } from 'vue'
+import { currentOrganizationObject, dupObject, edgeRules, edgeState, getRoleName, orgUserRoles } from '../../../global'
 
 // TODO: If a removed user no longer has roles to any organiztions, need to a create new organization for them with
 // default name of "Personal". This will allow them to continue to use the app.

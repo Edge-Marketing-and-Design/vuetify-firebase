@@ -1,5 +1,6 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
+import { edgeState, objHas } from '..global'
 
 const props = defineProps({
   orgFields: {

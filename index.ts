@@ -1,3 +1,4 @@
+import * as globalEdge from './global'
 import * as vuetifyComponents from './vuetify'
 import * as ionicComponents from './ionic'
 
@@ -11,3 +12,5 @@ export function getComponents(framework: 'vuetify' | 'ionic'): typeof vuetifyCom
       throw new Error(`Unsupported framework: ${framework}`)
   }
 }
+
+export { globalEdge }

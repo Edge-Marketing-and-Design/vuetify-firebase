@@ -1,5 +1,6 @@
 <script setup>
 import { inject, reactive } from 'vue'
+import { edgeRules } from '../../global'
 
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({

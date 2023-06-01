@@ -1,5 +1,6 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
+import { resetValidation, validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
   title: {

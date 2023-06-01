@@ -1,5 +1,6 @@
 <script setup>
 import { computed, defineProps, onBeforeMount, onMounted, reactive, watch } from 'vue'
+import { dupObject, edgeState, objHas } from '../../global'
 
 const props = defineProps({
   disableTracking: {

@@ -1,5 +1,7 @@
 <script setup>
 import { defineProps, inject, onMounted, reactive } from 'vue'
+import { useRoute } from 'vue-router'
+import { edgeRules } from '../../global'
 
 const props = defineProps({
   registrationCode: {

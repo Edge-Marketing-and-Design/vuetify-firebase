@@ -1,5 +1,8 @@
 <script setup>
-import { computed, defineProps, inject, onBeforeMount, reactive, useRouter, watch } from 'vue'
+import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { edgeState, getOrganizations, setOrganization } from '../global'
+import { resetValidation, validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
   type: {

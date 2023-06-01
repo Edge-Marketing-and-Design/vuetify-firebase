@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, inject, reactive } from 'vue'
+import { dupObject, edgeRules, edgeState, getOrganizations, getRoleName } from '../../../global'
 
 const props = defineProps({
   item: {
