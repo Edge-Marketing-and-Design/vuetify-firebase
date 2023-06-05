@@ -2,9 +2,9 @@
 import { defineProps, inject, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { edgeState, getOrganizations, setOrganization } from '../global'
 import login from './auth/login.vue'
 import register from './auth/register.vue'
-import { edgeState, getOrganizations, setOrganization } from '..global'
 
 const props = defineProps({
   type: {

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { edgeState } from '../global'
+import { dupObject, edgeState, getRoleName } from '../global'
 import { validate, validateFields } from './fieldValidator'
 
 const props = defineProps({

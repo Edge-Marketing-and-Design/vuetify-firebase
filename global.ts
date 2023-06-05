@@ -92,14 +92,13 @@ export const edgeRules = {
 }
 
 export const edgeLogOut = async (edgeFirebase: any) => {
-  const router = useRouter()
   edgeState.currentOrganization = ''
   edgeState.organizationDocPath = ''
   edgeState.organizations = []
   edgeState.changeTracker = {}
   edgeState.user = null
   await edgeFirebase.logOut()
-  await router.push('/app/login')
+  location.reload()
 }
 
 interface UserRoleType {

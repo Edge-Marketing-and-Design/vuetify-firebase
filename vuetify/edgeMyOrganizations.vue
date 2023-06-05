@@ -1,6 +1,6 @@
 <script setup>
 import { computed, defineProps, inject, reactive, watch } from 'vue'
-import { edgeState, getOrganizations } from '..global'
+import { edgeState, getOrganizations } from '../global'
 
 const props = defineProps({
   registrationCode: {

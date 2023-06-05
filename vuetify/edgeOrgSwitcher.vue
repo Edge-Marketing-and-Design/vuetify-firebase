@@ -1,6 +1,6 @@
 <script setup>
 import { inject } from 'vue'
-import { edgeState, setOrganization } from '..global'
+import { edgeState, setOrganization } from '../global'
 
 const edgeFirebase = inject('edgeFirebase')
 </script>

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, inject, onBeforeMount, reactive, watch } from 'vue'
-import { edgeRules, edgeState, objHas } from '..global'
+import { edgeRules, edgeState, objHas } from '../global'
 
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
