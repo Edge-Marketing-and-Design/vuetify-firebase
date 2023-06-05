@@ -1,6 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { dupObject, edgeState, getOrganizations, getRoleName } from '../global'
 import { validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -18,6 +17,7 @@ const props = defineProps({
     default: '',
   },
 })
+const edgeGlobal = inject('edgeGlobal')
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   loaded: true,
@@ -42,7 +42,7 @@ const newItem = {
 }
 
 const save = async () => {
-  const registerSend = dupObject(register)
+  const registerSend = edgeGlobal.dupObject(register)
   let isValid = false
   if (state.saveButton === 'Add Organization') {
     registerSend.dynamicDocumentFieldValue = state.workingItem.name
@@ -61,11 +61,11 @@ const save = async () => {
     state.error = { success: false, message: '' }
     state.loading = true
     const results = await edgeFirebase.currentUserRegister(registerSend)
-    await getOrganizations(edgeFirebase)
+    await edgeGlobal.getOrganizations(edgeFirebase)
     state.error = results
     state.loading = false
     console.log(results)
-    edgeState.changeTracker = {}
+    edgeGlobal.edgeState.changeTracker = {}
     if (state.error.success) {
       state.dialog = false
     }
@@ -74,20 +74,20 @@ const save = async () => {
 
 const addItem = () => {
   state.saveButton = 'Add Organization'
-  state.workingItem = dupObject(newItem)
+  state.workingItem = edgeGlobal.dupObject(newItem)
   state.currentTitle = 'Add Organization'
   state.dialog = true
 }
 
 const joinOrg = () => {
   state.saveButton = 'Join Organization'
-  state.workingItem = dupObject(newItem)
+  state.workingItem = edgeGlobal.dupObject(newItem)
   state.currentTitle = 'Join Organization'
   state.dialog = true
 }
 
 const deleteConfirm = (item) => {
-  if (getRoleName(edgeFirebase.user.roles, item.docId) === 'Admin') {
+  if (edgeGlobal.getRoleName(edgeFirebase.user.roles, item.docId) === 'Admin') {
     state.deleteButtons = [{
       text: 'OK',
       role: 'cancel',
@@ -106,7 +106,7 @@ const deleteConfirm = (item) => {
     state.deleteMessage = `Are you sure you want to leave the organization "${item.name}"?`
   }
   state.currentTitle = item.name
-  state.workingItem = dupObject(item)
+  state.workingItem = edgeGlobal.dupObject(item)
   state.deleteDialog = true
 }
 
@@ -115,7 +115,7 @@ const deleteAction = async (event) => {
     state.deleteDialog = false
     return
   }
-  if (getRoleName(edgeFirebase.user.roles, state.workingItem.docId) === 'Admin') {
+  if (edgeGlobal.getRoleName(edgeFirebase.user.roles, state.workingItem.docId) === 'Admin') {
     state.deleteDialog = false
     return
   }
@@ -133,10 +133,10 @@ const userMeta = computed(() => {
   return edgeFirebase.user.meta
 })
 onBeforeMount(() => {
-  state.meta = dupObject(userMeta.value)
+  state.meta = edgeGlobal.dupObject(userMeta.value)
 })
 watch(userMeta, async () => {
-  state.meta = dupObject(userMeta.value)
+  state.meta = edgeGlobal.dupObject(userMeta.value)
 })
 </script>
 
@@ -160,10 +160,10 @@ watch(userMeta, async () => {
       </ion-item>
     </ion-card-header>
 
-    <ion-item v-for="item in edgeState.organizations" :key="item.docId">
+    <ion-item v-for="item in edgeGlobal.edgeState.organizations" :key="item.docId">
       <ion-label>
         <h2>{{ item.name }}</h2>
-        <ion-badge> {{ getRoleName(edgeFirebase.user.roles, item.docId) }}</ion-badge>
+        <ion-badge> {{ edgeGlobal.getRoleName(edgeFirebase.user.roles, item.docId) }}</ion-badge>
       </ion-label>
       <ion-button slot="end" fill="solid" @click.stop="deleteConfirm(item)">
         Leave

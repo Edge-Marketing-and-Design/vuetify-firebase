@@ -1,6 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { edgeState, objHas } from '../global'
 import { resetValidation, validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -9,6 +8,7 @@ const props = defineProps({
     default: '',
   },
 })
+const edgeGlobal = inject('edgeGlobal')
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   loaded: true,
@@ -44,10 +44,10 @@ const updatePassword = async () => {
   }
 }
 const currentOrgName = computed(() => {
-  if (objHas(edgeFirebase.data, edgeState.organizationDocPath) === false) {
+  if (edgeGlobal.objHas(edgeFirebase.data, edgeGlobal.edgeState.organizationDocPath) === false) {
     return ''
   }
-  return edgeFirebase.data[edgeState.organizationDocPath].name
+  return edgeFirebase.data[edgeGlobal.edgeState.organizationDocPath].name
 })
 onBeforeMount(() => {
   state.username = edgeFirebase.user.firebaseUser.providerData[0].email

@@ -1,6 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { dupObject } from '../global'
 import { resetValidation, validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -14,6 +13,7 @@ const props = defineProps({
     default: () => ({}),
   },
 })
+const edgeGlobal = inject('edgeGlobal')
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   loaded: true,
@@ -36,10 +36,10 @@ const userMeta = computed(() => {
   return edgeFirebase.user.meta
 })
 onBeforeMount(() => {
-  state.meta = dupObject(userMeta.value)
+  state.meta = edgeGlobal.dupObject(userMeta.value)
 })
 watch(userMeta, async () => {
-  state.meta = dupObject(userMeta.value)
+  state.meta = edgeGlobal.dupObject(userMeta.value)
 })
 </script>
 

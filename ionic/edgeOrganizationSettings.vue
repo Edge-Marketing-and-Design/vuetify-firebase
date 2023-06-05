@@ -1,6 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { dupObject, edgeState } from '../global'
 import { resetValidation, validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -14,6 +13,7 @@ const props = defineProps({
     default: () => ({}),
   },
 })
+const edgeGlobal = inject('edgeGlobal')
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   loaded: true,
@@ -26,7 +26,7 @@ const state = reactive({
 const update = async () => {
   state.error = { success: false, message: '' }
   if (validateFields(state.meta, props.orgFields)) {
-    state.error = await edgeFirebase.changeDoc('organizations', edgeState.currentOrganization, state.meta)
+    state.error = await edgeFirebase.changeDoc('organizations', edgeGlobal.edgeState.currentOrganization, state.meta)
     if (state.error.success) {
       state.error.message = 'Profile updated'
       resetValidation()
@@ -34,11 +34,11 @@ const update = async () => {
   }
 }
 const orgMeta = computed(() => {
-  return edgeFirebase.data[`organizations/${edgeState.currentOrganization}`]
+  return edgeFirebase.data[`organizations/${edgeGlobal.edgeState.currentOrganization}`]
 })
 
 onBeforeMount(() => {
-  state.meta = dupObject(orgMeta.value)
+  state.meta = edgeGlobal.dupObject(orgMeta.value)
   if (!props.title) {
     state.title = `${orgMeta.value.name} Settings`
   }
@@ -47,7 +47,7 @@ onBeforeMount(() => {
   }
 })
 watch(orgMeta, async () => {
-  state.meta = dupObject(orgMeta.value)
+  state.meta = edgeGlobal.dupObject(orgMeta.value)
   if (!props.title) {
     state.title = `${orgMeta.value.name} Settings`
   }

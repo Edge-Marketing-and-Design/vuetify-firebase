@@ -1,6 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { dupObject, edgeState, getRoleName } from '../global'
 import { validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -13,11 +12,8 @@ const props = defineProps({
     required: false,
     default: () => ({}),
   },
-  userRoles: {
-    type: Array,
-    required: true,
-  },
 })
+const edgeGlobal = inject('edgeGlobal')
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   loaded: true,
@@ -41,7 +37,7 @@ const newItem = {
 }
 
 const currentOrgName = computed(() => {
-  const currentOrg = edgeFirebase.data[`organizations/${edgeState.currentOrganization}`]
+  const currentOrg = edgeFirebase.data[`organizations/${edgeGlobal.edgeState.currentOrganization}`]
   return currentOrg.name
 })
 
@@ -54,7 +50,7 @@ const users = computed(() => {
 const adminCount = computed(() => {
   return users.value.filter((item) => {
     return item.roles.find((role) => {
-      return role.collectionPath === edgeState.organizationDocPath.replaceAll('/', '-') && role.role === 'admin'
+      return role.collectionPath === edgeGlobal.edgeState.organizationDocPath.replaceAll('/', '-') && role.role === 'admin'
     })
   }).length
 })
@@ -65,13 +61,13 @@ const save = async () => {
     validation = { name: { type: 'string', required: true, pretty: 'Name' } }
   }
   if (validateFields(state.workingItem, validation)) {
-    const roles = props.userRoles.find(role => role.name === state.workingItem.role).roles
+    const roles = edgeGlobal.edgeState.userRoles.find(role => role.name === state.workingItem.role).roles
     if (state.saveButton === 'Invite Member') {
       edgeFirebase.addUser({ roles, meta: { name: state.workingItem.name, email: state.workingItem.email } })
     }
     else {
       const oldRoles = state.workingItem.roles.filter((role) => {
-        return role.collectionPath.startsWith(edgeState.organizationDocPath.replaceAll('/', '-'))
+        return role.collectionPath.startsWith(edgeGlobal.edgeState.organizationDocPath.replaceAll('/', '-'))
       })
 
       for (const role of oldRoles) {
@@ -88,15 +84,15 @@ const save = async () => {
 
 const addItem = () => {
   state.saveButton = 'Invite Member'
-  state.workingItem = dupObject(newItem)
+  state.workingItem = edgeGlobal.dupObject(newItem)
   state.dialog = true
 }
 
 const editItem = (item) => {
   state.saveButton = 'Update Member'
-  state.workingItem = dupObject(item)
+  state.workingItem = edgeGlobal.dupObject(item)
   state.workingItem.name = item.meta.name
-  state.workingItem.role = getRoleName(item.roles, edgeState.currentOrganization)
+  state.workingItem.role = edgeGlobal.getRoleName(item.roles, edgeGlobal.edgeState.currentOrganization)
   const newItemKeys = Object.keys(newItem)
   newItemKeys.forEach((key) => {
     if (state.workingItem[key] === undefined) {
@@ -107,7 +103,7 @@ const editItem = (item) => {
 }
 
 const deleteConfirm = (item) => {
-  if (getRoleName(item.roles, edgeState.currentOrganization) === 'Admin' && adminCount.value === 1) {
+  if (edgeGlobal.getRoleName(item.roles, edgeGlobal.edgeState.currentOrganization) === 'Admin' && adminCount.value === 1) {
     state.deleteButtons = [{
       text: 'OK',
       role: 'cancel',
@@ -135,7 +131,7 @@ const deleteConfirm = (item) => {
     }
   }
   state.currentTitle = item.meta.name
-  state.workingItem = dupObject(item)
+  state.workingItem = edgeGlobal.dupObject(item)
   state.deleteDialog = true
 }
 const deleteAction = async (event) => {
@@ -166,10 +162,10 @@ const title = computed(() => {
 })
 
 onBeforeMount(() => {
-  state.meta = dupObject(userMeta.value)
+  state.meta = edgeGlobal.dupObject(userMeta.value)
 })
 watch(userMeta, async () => {
-  state.meta = dupObject(userMeta.value)
+  state.meta = edgeGlobal.dupObject(userMeta.value)
 })
 </script>
 
@@ -193,7 +189,7 @@ watch(userMeta, async () => {
     <ion-item v-for="item in users" :key="item.docId">
       <ion-label class="ion-text-wrap" @click="editItem(item)">
         <h2>{{ item.meta.name }}</h2>
-        <ion-badge>{{ getRoleName(item.roles, edgeState.currentOrganization) }}</ion-badge>
+        <ion-badge>{{ edgeGlobal.getRoleName(item.roles, edgeGlobal.edgeState.currentOrganization) }}</ion-badge>
         <ion-badge v-if="item.userId === edgeFirebase.user.uid" class="ml-2" color="secondary">
           You
         </ion-badge>
@@ -282,7 +278,7 @@ watch(userMeta, async () => {
               :error-text="validate.message.role"
               :disabled="state.workingItem.userId === edgeFirebase.user.uid"
             >
-              <ion-select-option v-for="role in userRoles" :key="role" :value="role.name">
+              <ion-select-option v-for="role in edgeGlobal.edgeState.userRoles" :key="role" :value="role.name">
                 {{ role.name }}
               </ion-select-option>
             </ion-select>

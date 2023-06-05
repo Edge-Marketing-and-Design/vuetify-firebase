@@ -1,7 +1,6 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { edgeState, getOrganizations, setOrganization } from '../global'
 import { resetValidation, validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -43,6 +42,7 @@ const props = defineProps({
   },
 })
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
 const state = reactive({
   loading: false,
   user: {
@@ -165,21 +165,21 @@ watch(showRegistrationCode, async () => {
 
 const router = useRouter()
 watch(edgeFirebase.user, async () => {
-  edgeState.user = edgeFirebase.user
+  edgeGlobal.edgeState.user = edgeFirebase.user
   if (edgeFirebase.user.loggedIn) {
-    await getOrganizations(edgeFirebase)
+    await edgeGlobal.getOrganizations(edgeFirebase)
     const storedOrganization = localStorage.getItem('organizationID')
-    if (storedOrganization && edgeState.organizations.some(org => org.docId === storedOrganization)) {
-      await setOrganization(storedOrganization, edgeFirebase)
+    if (storedOrganization && edgeGlobal.edgeState.organizations.some(org => org.docId === storedOrganization)) {
+      await edgeGlobal.setOrganization(storedOrganization, edgeFirebase)
     }
-    else if (edgeState.currentOrganization) {
-      await setOrganization(edgeState.currentOrganization, edgeFirebase)
+    else if (edgeGlobal.edgeState.currentOrganization) {
+      await edgeGlobal.setOrganization(edgeGlobal.edgeState.currentOrganization, edgeFirebase)
     }
-    else if (edgeState.organizations.length > 0) {
-      await setOrganization(edgeState.organizations[0].docId, edgeFirebase)
+    else if (edgeGlobal.edgeState.organizations.length > 0) {
+      await edgeGlobal.setOrganization(edgeGlobal.edgeState.organizations[0].docId, edgeFirebase)
     }
 
-    const cleanedRoute = edgeState.preLoginRoute.endsWith('/') ? edgeState.preLoginRoute.slice(0, -1) : edgeState.preLoginRoute
+    const cleanedRoute = edgeGlobal.edgeState.preLoginRoute.endsWith('/') ? edgeGlobal.edgeState.preLoginRoute.slice(0, -1) : edgeGlobal.edgeState.preLoginRoute
     console.log(`cleaned route: ${cleanedRoute}`)
     if (cleanedRoute === ''
     || cleanedRoute === '/login'
@@ -188,7 +188,7 @@ watch(edgeFirebase.user, async () => {
       router.push(props.afterLoginPath)
     }
     else {
-      router.push(edgeState.preLoginRoute)
+      router.push(edgeGlobal.edgeState.preLoginRoute)
     }
   }
   state.loading = false

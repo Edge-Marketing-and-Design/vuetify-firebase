@@ -1,7 +1,7 @@
 {
   "name": "@edgedev/firebase-framework",
-  "version": "1.0.43",
-  "description": "Vuetify 3 components using @edgedev/firebase",
+  "version": "1.0.44",
+  "description": "Ionic & Vuetify 3 components using @edgedev/firebase",
   "main": "index.js",
   "scripts": {
     "postinstall": "bash ./postinstall.sh"
