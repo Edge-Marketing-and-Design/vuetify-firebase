@@ -2,6 +2,8 @@ import * as edgeGlobal from './global'
 import * as vuetifyComponents from './vuetify'
 import * as ionicComponents from './ionic'
 
+// TODO FOLLOWING WORK TO MAKE SURE GLOBALS WORK USING PROVIDE/INJECT NEED UPDATE VUETIFY SIDE
+
 export function getComponents(framework: 'vuetify' | 'ionic'): typeof vuetifyComponents | typeof ionicComponents {
   switch (framework) {
     case 'vuetify':
