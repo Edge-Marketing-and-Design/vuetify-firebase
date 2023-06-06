@@ -1,5 +1,7 @@
 <script setup>
 import { inject } from 'vue'
+import { IonIcon } from '@ionic/vue'
+import { checkmark } from 'ionicons/icons'
 
 const edgeGlobal = inject('edgeGlobal')
 const edgeFirebase = inject('edgeFirebase')
@@ -14,10 +16,10 @@ const edgeFirebase = inject('edgeFirebase')
       <ion-label class="my-0">
         {{ edgeFirebase.data[`organizations/${org.docId}`].name }}
       </ion-label>
-      <ion-icon
+      <IonIcon
         v-if="org.docId === edgeGlobal.edgeState.currentOrganization"
         slot="end"
-        :icon="ioniconsCheckmark"
+        :icon="checkmark"
         class="selected-org my-0"
         aria-hidden="true"
       />

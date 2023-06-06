@@ -1,5 +1,7 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
+import { IonIcon } from '@ionic/vue'
+import { close } from 'ionicons/icons'
 import { validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -223,7 +225,7 @@ watch(userMeta, async () => {
         <ion-toolbar color="secondary">
           <ion-buttons slot="start">
             <ion-button @click="closeDialog">
-              <ion-icon :icon="ioniconsClose" />
+              <IonIcon :icon="close" />
             </ion-button>
           </ion-buttons>
           <ion-title>{{ state.saveButton }}</ion-title>

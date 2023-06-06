@@ -1,6 +1,9 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { IonIcon } from '@ionic/vue'
+
+import { checkmark, logoMicrosoft, mail } from 'ionicons/icons'
 import { resetValidation, validate, validateFields } from './fieldValidator'
 
 const props = defineProps({
@@ -217,7 +220,7 @@ watch(edgeFirebase.user, async () => {
             <div class="flex-grow border-t" />
           </div>
           <ion-button v-if="provider.type === 'microsoft'" fill="solid" expand="block" @click="login(provider)">
-            <ion-icon slot="start" :icon="ioniconsLogoMicrosoft" />
+            <IonIcon slot="start" :icon="checkmark" />
             Login with Microsoft
           </ion-button>
           <template v-if="provider.type === 'email'">
@@ -258,10 +261,10 @@ watch(edgeFirebase.user, async () => {
             <div class="flex-grow border-t" />
           </div>
           <ion-button fill="solid" expand="block" @click="state.registerProviderType = provider.type">
-            <ion-icon v-if="provider.type === 'microsoft'" slot="start" :icon="ioniconsLogoMicrosoft" />
-            <ion-icon v-if="provider.type === 'email'" slot="start" :icon="ioniconsMail" />
+            <IonIcon v-if="provider.type === 'microsoft'" slot="start" :icon="logoMicrosoft" />
+            <IonIcon v-if="provider.type === 'email'" slot="start" :icon="mail" />
             Register with {{ provider.type }}
-            <ion-icon v-if="state.registerProviderType === provider.type" slot="end" :icon="ioniconsCheckmark" />
+            <IonIcon v-if="state.registerProviderType === provider.type" slot="end" :icon="checkmark" />
           </ion-button>
         </template>
         <template v-if="state.registerProviderType === 'email'">
