@@ -61,7 +61,8 @@ const save = async () => {
     validation = { name: { type: 'string', required: true, pretty: 'Name' } }
   }
   if (validateFields(state.workingItem, validation)) {
-    const roles = edgeGlobal.edgeState.userRoles.find(role => role.name === state.workingItem.role).roles
+    const userRoles = edgeGlobal.orgUserRoles(edgeGlobal.edgeState.currentOrganization)
+    const roles = userRoles.find(role => role.name === state.workingItem.role).roles
     if (state.saveButton === 'Invite Member') {
       edgeFirebase.addUser({ roles, meta: { name: state.workingItem.name, email: state.workingItem.email } })
     }
