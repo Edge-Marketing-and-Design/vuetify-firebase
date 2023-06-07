@@ -1,4 +1,16 @@
 #!/bin/bash
+
+set -e
+
+# Define cleanup procedure
+cleanup() {
+    rm -rf ./project_files
+    rm -- "$0"
+}
+
+# Setup trap to call cleanup on successful execution
+trap cleanup EXIT
+
 echo "Please select the framework:"
 options=("vuetify" "ionic" "Quit")
 select opt in "${options[@]}"
@@ -27,11 +39,9 @@ mv ./project_files/app_${framework}.vue ./app.vue
 
 [ ! -d "./composables/" ] && mkdir -p "./composables/"
 [ ! -d "./pages/" ] && mkdir -p "./pages/"
-[ ! -d "./plugins/" ] && mkdir -p "./plugins/"
 
 rsync -av --ignore-existing "./project_files/composables_${framework}/" "./composables/"
 rsync -av --ignore-existing "./project_files/pages_${framework}/" "./pages/"
-rsync -av --ignore-existing "./project_files/plugins_${framework}/" "./plugins/"
 
 pnpm install --shamefully-hoist=true --strict-peer-dependencies=false --unsafe-perm=true --side-effects-cache=false --ignore-scripts=false
 
