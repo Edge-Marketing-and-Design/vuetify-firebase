@@ -1,16 +1,4 @@
 #!/bin/bash
-
-set -e
-
-# Define cleanup procedure
-cleanup() {
-    rm -rf ./project_files
-    rm -- "$0"
-}
-
-# Setup trap to call cleanup on successful execution
-trap cleanup EXIT
-
 echo "Please select the framework:"
 options=("vuetify" "ionic" "Quit")
 select opt in "${options[@]}"
@@ -32,16 +20,16 @@ do
         *) echo "invalid option $REPLY";;
     esac
 done
-mv ./npmrc.tmp ./.npmrc
-mv ./env.tmp ./.env
-mv ./project_files/init_package_${framework}.json ./package.json
-mv ./project_files/app_${framework}.vue ./app.vue
+mv ./node_modules/@edgedev/firebase-framework/project_files/.npmrc ./.npmrc
+mv ./node_modules/@edgedev/firebase-framework/project_files/.env ./.env
+mv ./node_modules/@edgedev/firebase-framework/project_files/init_package_${framework}.json ./package.json
+mv ./node_modules/@edgedev/firebase-framework/project_files/app_${framework}.vue ./app.vue
 
 [ ! -d "./composables/" ] && mkdir -p "./composables/"
 [ ! -d "./pages/" ] && mkdir -p "./pages/"
 
-rsync -av --ignore-existing "./project_files/composables_${framework}/" "./composables/"
-rsync -av --ignore-existing "./project_files/pages_${framework}/" "./pages/"
+rsync -av --ignore-existing "./node_modules/@edgedev/firebase-framework/project_files/composables_${framework}/" "./composables/"
+rsync -av --ignore-existing "./node_modules/@edgedev/firebase-framework/project_files/pages_${framework}/" "./pages/"
 
 pnpm install --shamefully-hoist=true --strict-peer-dependencies=false --unsafe-perm=true --side-effects-cache=false --ignore-scripts=false
 
