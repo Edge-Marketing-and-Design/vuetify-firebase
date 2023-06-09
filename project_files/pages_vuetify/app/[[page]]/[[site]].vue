@@ -9,17 +9,8 @@ const page = computed(() => {
 const site = computed(() => {
   return route.params.site
 })
-
-const user = computed(() => {
-  return edgeFirebase.user
-})
-
 definePageMeta({
   middleware: 'auth',
-})
-
-watch(user, () => {
-  edgeState.value = user.value
 })
 </script>
 

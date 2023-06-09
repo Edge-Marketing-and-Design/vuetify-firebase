@@ -98,7 +98,7 @@ export const edgeLogOut = async (edgeFirebase: any) => {
   edgeState.changeTracker = {}
   edgeState.user = null
   await edgeFirebase.logOut()
-  location.reload()
+  // location.reload()
 }
 
 interface UserRoleType {
