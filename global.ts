@@ -7,7 +7,6 @@ export const edgeState = reactive({
   organizations: [],
   changeTracker: {},
   user: null,
-  preLoginRoute: '',
   userRoles: [],
 })
 
@@ -98,7 +97,10 @@ export const edgeLogOut = async (edgeFirebase: any) => {
   edgeState.changeTracker = {}
   edgeState.user = null
   await edgeFirebase.logOut()
-  // location.reload()
+  const auth: any = useState('auth')
+  auth.value = ''
+  const router = useRouter()
+  router.push('/app/login')
 }
 
 interface UserRoleType {

@@ -24,8 +24,10 @@ const edgeGlobal = inject('edgeGlobal')
 
 const router = useRouter()
 
-watch(edgeFirebase.user, async () => {
+const doLogin = async () => {
   edgeGlobal.edgeState.user = edgeFirebase.user
+  const auth = useState('auth')
+  auth.value = edgeFirebase.user
   if (edgeFirebase.user.loggedIn) {
     await edgeGlobal.getOrganizations(edgeFirebase)
     const storedOrganization = localStorage.getItem('organizationID')
@@ -39,7 +41,12 @@ watch(edgeFirebase.user, async () => {
       await edgeGlobal.setOrganization(edgeGlobal.edgeState.organizations[0].docId, edgeFirebase)
     }
 
-    const cleanedRoute = edgeGlobal.edgeState.preLoginRoute.endsWith('/') ? edgeGlobal.edgeState.preLoginRoute.slice(0, -1) : edgeGlobal.edgeState.preLoginRoute
+    const preLoginRoute = useState('preLoginRoute')
+
+    let cleanedRoute = ''
+    if (preLoginRoute.value) {
+      cleanedRoute = preLoginRoute.value.endsWith('/') ? preLoginRoute.value.slice(0, -1) : preLoginRoute.value
+    }
 
     if (cleanedRoute === ''
     || cleanedRoute === '/app'
@@ -48,9 +55,15 @@ watch(edgeFirebase.user, async () => {
       router.push('/app/dashboard')
     }
     else {
-      router.push(edgeGlobal.edgeState.preLoginRoute)
+      router.push(preLoginRoute.value)
     }
   }
+}
+onBeforeMount(() => {
+  doLogin()
+})
+watch(edgeFirebase.user, async () => {
+  doLogin()
 })
 </script>
 

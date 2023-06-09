@@ -1,15 +1,13 @@
 export default defineNuxtRouteMiddleware(async () => {
   // EDGE START
-  const auth: any = edgeState.value
-  if (auth) {
-    if (!auth.preLoginRoute) {
-      auth.preLoginRoute = window.location.pathname
-    }
-
-    if (!auth.user) {
-      return '/app/login'
-    }
-    if (!auth.user.loggedIn) {
+  const preLoginRoute = useState('preLoginRoute')
+  if (!preLoginRoute.value) {
+    preLoginRoute.value = window.location.pathname
+  }
+  const auth: any = useState('auth')
+  console.log('auth', auth.value)
+  if (auth.value) {
+    if (!auth.value.loggedIn) {
       return '/app/login'
     }
   }

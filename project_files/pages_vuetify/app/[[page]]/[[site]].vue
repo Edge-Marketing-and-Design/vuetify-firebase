@@ -1,14 +1,13 @@
 <script setup>
 const route = useRoute()
 
-const edgeFirebase = inject('edgeFirebase')
-
 const page = computed(() => {
   return route.params.page
 })
 const site = computed(() => {
   return route.params.site
 })
+
 definePageMeta({
   middleware: 'auth',
 })
