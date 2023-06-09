@@ -1,6 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { edgeState, objHas } from '../global'
 
 const props = defineProps({
   orgFields: {
@@ -9,6 +8,8 @@ const props = defineProps({
   },
 })
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
+
 const state = reactive({
   data: {},
   org: '',
@@ -18,26 +19,26 @@ const state = reactive({
 const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
-    edgeFirebase.changeDoc('organizations', edgeState.currentOrganization, state.data)
+    edgeFirebase.changeDoc('organizations', edgeGlobal.edgeState.currentOrganization, state.data)
     // getOrganizations(edgeFirebase)
-    edgeState.changeTracker = {}
+    edgeGlobal.edgeState.changeTracker = {}
     state.loaded = false
     await nextTick()
     state.loaded = true
   }
 }
 const currentOrgData = computed(() => {
-  if (objHas(edgeFirebase.data, edgeState.organizationDocPath) === false) {
+  if (edgeGlobal.objHas(edgeFirebase.data, edgeGlobal.edgeState.organizationDocPath) === false) {
     return ''
   }
-  return edgeFirebase.data[edgeState.organizationDocPath]
+  return edgeFirebase.data[edgeGlobal.edgeState.organizationDocPath]
 })
 onBeforeMount(() => {
   state.data = currentOrgData.value
 })
 watch(currentOrgData, async () => {
   state.org = currentOrgData.value
-  edgeState.changeTracker = {}
+  edgeGlobal.edgeState.changeTracker = {}
   state.loaded = false
   await nextTick()
   state.loaded = true
@@ -67,7 +68,7 @@ watch(currentOrgData, async () => {
           persistent-hint
         />
         <v-text-field
-          v-model="edgeState.currentOrganization"
+          v-model="edgeGlobal.edgeState.currentOrganization"
           class="mt-5"
           variant="underlined"
           label="Organization ID"
@@ -76,7 +77,7 @@ watch(currentOrgData, async () => {
           persistent-hint
         >
           <template #prepend-inner>
-            <clipboard-button size="small" :text="edgeState.currentOrganization" />
+            <clipboard-button size="small" :text="edgeGlobal.edgeState.currentOrganization" />
           </template>
         </v-text-field>
       </v-card-text>

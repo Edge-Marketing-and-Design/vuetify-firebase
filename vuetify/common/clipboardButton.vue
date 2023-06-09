@@ -1,12 +1,12 @@
 <script setup>
 import { defineProps, reactive } from 'vue'
-
 const props = defineProps({
   text: {
     type: String,
     required: true,
   },
 })
+const edgeGlobal = inject('edgeGlobal')
 const state = reactive({
   snackbar: false,
   buttonIcon: 'mdi-content-copy',

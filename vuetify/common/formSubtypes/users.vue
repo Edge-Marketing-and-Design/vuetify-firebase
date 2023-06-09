@@ -1,6 +1,6 @@
 <script setup>
 import { computed, defineProps, inject, reactive } from 'vue'
-import { currentOrganizationObject, dupObject, edgeRules, edgeState, getRoleName, orgUserRoles } from '../../../global'
+import { edgeState, getRoleName, orgUserRoles } from '../../../global'
 
 // TODO: If a removed user no longer has roles to any organiztions, need to a create new organization for them with
 // default name of "Personal". This will allow them to continue to use the app.
@@ -24,6 +24,7 @@ const props = defineProps({
   },
 })
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
 const state = reactive({
   workingItem: {},
   dialog: false,
@@ -59,7 +60,7 @@ const adminCount = computed(() => {
 
 const addItem = () => {
   state.saveButton = 'Invite User'
-  state.workingItem = dupObject(newItem)
+  state.workingItem = edgeGlobal.dupObject(newItem)
   state.workingItem.id = generateShortId()
   state.currentTitle = 'Invite User'
   state.dialog = true
@@ -68,7 +69,7 @@ const addItem = () => {
 const editItem = (item) => {
   state.currentTitle = item.name
   state.saveButton = 'Update User'
-  state.workingItem = dupObject(item)
+  state.workingItem = edgeGlobal.dupObject(item)
   state.workingItem.name = item.meta.name
   state.workingItem.role = getRoleName(props.item.roles, edgeState.currentOrganization)
   const newItemKeys = Object.keys(newItem)
@@ -82,7 +83,7 @@ const editItem = (item) => {
 
 const deleteConfirm = (item) => {
   state.currentTitle = item.name
-  state.workingItem = dupObject(item)
+  state.workingItem = edgeGlobal.dupObject(item)
   state.deleteDialog = true
 }
 
@@ -200,13 +201,13 @@ const onSubmit = async (event) => {
       </v-toolbar>
       <v-card-text>
         <h3 v-if="state.workingItem.userId === edgeFirebase.user.uid && adminCount > 1">
-          Are you sure you want to remove yourself from the organization "{{ currentOrganizationObject.name }}"? You will no longer have access to any of the organization's data.
+          Are you sure you want to remove yourself from the organization "{{ edgeGlobal.currentOrganizationObject.name }}"? You will no longer have access to any of the organization's data.
         </h3>
         <h3 v-else-if="state.workingItem.userId === edgeFirebase.user.uid && adminCount === 1">
           You cannot remove yourself from this organization because you are the only admin. You can delete the organization or add another admin.
         </h3>
         <h3 v-else>
-          Are you sure you want to remove "{{ state.workingItem.meta.name }}" from the organization "{{ currentOrganizationObject.name }}"?
+          Are you sure you want to remove "{{ state.workingItem.meta.name }}" from the organization "{{ edgeGlobal.currentOrganizationObject.name }}"?
         </h3>
       </v-card-text>
       <v-card-actions>
@@ -267,7 +268,7 @@ const onSubmit = async (event) => {
             v-model="state.workingItem.name"
             :disable-tracking="true"
             field-type="text"
-            :rules="[edgeRules.required]"
+            :rules="[edgeGlobal.edgeRules.required]"
             label="Name"
             :parent-tracker-id="`inviteUser-${state.workingItem.id}`"
             :disabled="state.saveButton !== 'Invite User'"
@@ -277,7 +278,7 @@ const onSubmit = async (event) => {
             v-model="state.workingItem.email"
             :disable-tracking="true"
             field-type="text"
-            :rules="[edgeRules.required, edgeRules.email]"
+            :rules="[edgeGlobal.edgeRules.required, edgeGlobal.edgeRules.email]"
             label="Email"
             :parent-tracker-id="`inviteUser-${state.workingItem.id}`"
           />
@@ -286,7 +287,7 @@ const onSubmit = async (event) => {
             :disable-tracking="disableTracking"
             :items="roleNamesOnly"
             field-type="select"
-            :rules="[edgeRules.required]"
+            :rules="[edgeGlobal.edgeRules.required]"
             label="Role"
             :parent-tracker-id="`inviteUser-${state.workingItem.id}`"
             :disabled="state.workingItem.userId === edgeFirebase.user.uid"

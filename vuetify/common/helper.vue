@@ -1,13 +1,13 @@
 <!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <script setup>
 import { computed, defineProps, reactive } from 'vue'
-
 const props = defineProps({
   helper: {
     type: String,
     default: null,
   },
 })
+const edgeGlobal = inject('edgeGlobal')
 const state = reactive({
   titles: [
     'Help, Help, and Help',

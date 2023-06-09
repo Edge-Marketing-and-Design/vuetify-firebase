@@ -1,8 +1,9 @@
 <script setup>
 import { computed, inject, onBeforeMount, reactive, watch } from 'vue'
-import { edgeRules, edgeState, objHas } from '../global'
 
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
+
 const state = reactive({
   username: '',
   newPassword: '',
@@ -29,7 +30,7 @@ const updateUser = async (event) => {
     if (state.userError.success) {
       state.userError = { success: true, message: 'Email successfully changed' }
     }
-    edgeState.changeTracker = {}
+    edgeGlobal.edgeState.changeTracker = {}
     state.loaded = false
     await nextTick()
     state.loaded = true
@@ -49,7 +50,7 @@ const updatePassword = async (event) => {
       state.newPassword = ''
       state.passwordError = { success: true, message: 'Password successfully changed' }
     }
-    edgeState.changeTracker = {}
+    edgeGlobal.edgeState.changeTracker = {}
     state.loaded = false
     await nextTick()
     state.loaded = true
@@ -66,17 +67,17 @@ const updatePassword = async (event) => {
 //   }
 // }
 const currentOrgName = computed(() => {
-  if (objHas(edgeFirebase.data, edgeState.organizationDocPath) === false) {
+  if (edgeGlobal.objHas(edgeFirebase.data, edgeGlobal.edgeState.organizationDocPath) === false) {
     return ''
   }
-  return edgeFirebase.data[edgeState.organizationDocPath].name
+  return edgeFirebase.data[edgeGlobal.edgeState.organizationDocPath].name
 })
 onBeforeMount(() => {
   state.username = edgeFirebase.user.firebaseUser.providerData[0].email
 })
 watch(currentOrgName, async () => {
   state.org = currentOrgName.value
-  edgeState.changeTracker = {}
+  edgeGlobal.edgeState.changeTracker = {}
   state.loaded = false
   await nextTick()
   state.loaded = true
@@ -99,7 +100,7 @@ watch(currentOrgName, async () => {
           <g-input
             v-model="state.username"
             field-type="text"
-            :rules="[edgeRules.required, edgeRules.email]"
+            :rules="[edgeGlobal.edgeRules.required, edgeGlobal.edgeRules.email]"
             label="Username"
             parent-tracker-id="my-account"
             hint="Update your email address, which also serves as your username."
@@ -132,7 +133,7 @@ watch(currentOrgName, async () => {
 
           <v-text-field
             v-model="state.oldPassword"
-            :rules="[edgeRules.required]"
+            :rules="[edgeGlobal.edgeRules.required]"
             :type="state.passwordShow ? 'text' : 'password'"
             label="Old Password"
             placeholder="Enter your old password"
@@ -142,7 +143,7 @@ watch(currentOrgName, async () => {
           />
           <v-text-field
             v-model="state.newPassword"
-            :rules="[edgeRules.password]"
+            :rules="[edgeGlobal.edgeRules.password]"
             :type="state.passwordShow ? 'text' : 'password'"
             label="New Password"
             placeholder="Enter your new password"

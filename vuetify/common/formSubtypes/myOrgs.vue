@@ -1,6 +1,5 @@
 <script setup>
 import { defineProps, inject, reactive } from 'vue'
-import { dupObject, edgeRules, edgeState, getOrganizations, getRoleName } from '../../../global'
 
 const props = defineProps({
   item: {
@@ -18,6 +17,7 @@ const props = defineProps({
 })
 
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
 const state = reactive({
   workingItem: {},
   dialog: false,
@@ -37,7 +37,7 @@ const newItem = {
 const addItem = () => {
   console.log(newItem)
   state.saveButton = 'Add Organization'
-  state.workingItem = dupObject(newItem)
+  state.workingItem = edgeGlobal.dupObject(newItem)
   state.workingItem.id = generateShortId()
   state.currentTitle = 'Add Organization'
   state.dialog = true
@@ -45,7 +45,7 @@ const addItem = () => {
 
 const joinOrg = () => {
   state.saveButton = 'Join Organization'
-  state.workingItem = dupObject(newItem)
+  state.workingItem = edgeGlobal.dupObject(newItem)
   state.workingItem.id = generateShortId()
   state.currentTitle = 'Join Organization'
   state.dialog = true
@@ -53,19 +53,19 @@ const joinOrg = () => {
 
 const deleteConfirm = (item) => {
   state.currentTitle = item.name
-  state.workingItem = dupObject(item)
+  state.workingItem = edgeGlobal.dupObject(item)
   state.deleteDialog = true
 }
 
 const deleteAction = async () => {
   await edgeFirebase.removeUser(state.workingItem.docId)
   state.deleteDialog = false
-  edgeState.changeTracker = {}
+  edgeGlobal.edgeState.changeTracker = {}
 }
 
 const closeDialog = () => {
   state.dialog = false
-  edgeState.changeTracker = {}
+  edgeGlobal.edgeState.changeTracker = {}
 }
 
 const getRole = (org) => {
@@ -83,7 +83,7 @@ const register = reactive({
 
 const onSubmit = async (event) => {
   const results = await event
-  const registerSend = dupObject(register)
+  const registerSend = edgeGlobal.dupObject(register)
   if (results.valid) {
     if (state.saveButton === 'Add Organization') {
       registerSend.dynamicDocumentFieldValue = state.workingItem.name
@@ -93,9 +93,9 @@ const onSubmit = async (event) => {
       registerSend.registrationCode = state.workingItem.name
     }
     const results = await edgeFirebase.currentUserRegister(registerSend)
-    getOrganizations(edgeFirebase)
+    edgeGlobal.getOrganizations(edgeFirebase)
     console.log(results)
-    edgeState.changeTracker = {}
+    edgeGlobal.edgeState.changeTracker = {}
     state.dialog = false
   }
 }
@@ -120,7 +120,7 @@ const onSubmit = async (event) => {
     </v-list-item-title>
     <v-list-item-subtitle>
       <v-chip size="small" color="primary">
-        {{ getRoleName(edgeFirebase.user.roles, props.item.docId) }}
+        {{ edgeGlobal.getRoleName(edgeFirebase.user.roles, props.item.docId) }}
       </v-chip>
     </v-list-item-subtitle>
     <template #append>
@@ -217,7 +217,7 @@ const onSubmit = async (event) => {
               v-model="state.workingItem.name"
               :disable-tracking="true"
               field-type="text"
-              :rules="[edgeRules.required]"
+              :rules="[edgeGlobal.edgeRules.required]"
               label="Name"
               :parent-tracker-id="`myOrgs-${state.workingItem.id}`"
             />
@@ -228,7 +228,7 @@ const onSubmit = async (event) => {
               v-model="state.workingItem.name"
               :disable-tracking="true"
               field-type="text"
-              :rules="[edgeRules.required]"
+              :rules="[edgeGlobal.edgeRules.required]"
               label="Registration Code"
               :parent-tracker-id="`myOrgs-${state.workingItem.id}`"
             />

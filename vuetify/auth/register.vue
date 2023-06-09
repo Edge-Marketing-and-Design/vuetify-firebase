@@ -1,7 +1,6 @@
 <script setup>
 import { defineProps, inject, onMounted, reactive } from 'vue'
 import { useRoute } from 'vue-router'
-import { edgeRules } from '../../global'
 
 const props = defineProps({
   registrationCode: {
@@ -15,6 +14,7 @@ const props = defineProps({
 })
 const route = useRoute()
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
 
 const state = reactive({
   passwordVisible: false,
@@ -107,7 +107,7 @@ onMounted(() => {
         <v-text-field
           v-if="state.provider === 0"
           v-model="register.email"
-          :rules="[edgeRules.email]"
+          :rules="[edgeGlobal.edgeRules.email]"
           class="mb-2"
           label="Email"
           variant="underlined"
@@ -116,7 +116,7 @@ onMounted(() => {
         <v-text-field
           v-if="state.provider === 0"
           v-model="register.password"
-          :rules="[edgeRules.password]"
+          :rules="[edgeGlobal.edgeRules.password]"
           :append-inner-icon="state.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
           :type="state.passwordShow ? 'text' : 'password'"
           label="Password"
@@ -127,7 +127,7 @@ onMounted(() => {
 
         <v-text-field
           v-model="register.meta.name"
-          :rules="[edgeRules.required]"
+          :rules="[edgeGlobal.edgeRules.required]"
           color="primary"
           label="Name"
           variant="underlined"
@@ -146,7 +146,7 @@ onMounted(() => {
         <v-text-field
           v-if="state.showRegistrationCode"
           v-model="state.registrationCode"
-          :rules="[edgeRules.required]"
+          :rules="[edgeGlobal.edgeRules.required]"
           color="primary"
           label="Registration Code"
           variant="underlined"
@@ -154,7 +154,7 @@ onMounted(() => {
         <v-text-field
           v-else
           v-model="register.dynamicDocumentFieldValue"
-          :rules="[edgeRules.required]"
+          :rules="[edgeGlobal.edgeRules.required]"
           color="primary"
           label="Organization"
           variant="underlined"
@@ -162,7 +162,7 @@ onMounted(() => {
 
         <v-checkbox
           v-model="state.terms"
-          :rules="[edgeRules.required]"
+          :rules="[edgeGlobal.edgeRules.required]"
           color="secondary"
           label="I agree to site terms and conditions"
         />

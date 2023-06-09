@@ -7,14 +7,14 @@ export default defineNuxtRouteMiddleware(async () => {
     }
 
     if (!auth.user) {
-      return '/login'
+      return '/app/login'
     }
     if (!auth.user.loggedIn) {
-      return '/login'
+      return '/app/login'
     }
   }
   else {
-    return '/login'
+    return '/app/login'
   }
   // EDGE END
 })

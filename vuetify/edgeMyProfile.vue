@@ -1,6 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, onBeforeMount, reactive, watch } from 'vue'
-import { edgeState } from '../global'
 
 const props = defineProps({
   metaFields: {
@@ -9,6 +8,8 @@ const props = defineProps({
   },
 })
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
+
 const state = reactive({
   meta: {},
   name: '',
@@ -19,7 +20,7 @@ const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
     edgeFirebase.setUserMeta(state.meta)
-    edgeState.changeTracker = {}
+    edgeGlobal.edgeState.changeTracker = {}
     state.loaded = false
     await nextTick()
     state.loaded = true
@@ -36,7 +37,7 @@ onBeforeMount(() => {
 
 watch(currentMeta, async () => {
   state.meta = currentMeta.value
-  edgeState.changeTracker = {}
+  edgeGlobal.edgeState.changeTracker = {}
   state.loaded = false
   await nextTick()
   state.loaded = true

@@ -1,8 +1,9 @@
 <script setup>
 import { inject, reactive } from 'vue'
-import { edgeRules } from '../../global'
 
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
+
 const state = reactive({
   form: false,
   email: '',
@@ -31,7 +32,7 @@ const onSubmit = async () => {
     >
       <v-text-field
         v-model="login.email"
-        :rules="[edgeRules.email]"
+        :rules="[edgeGlobal.edgeRules.email]"
         class="mb-2"
         label="Email"
         variant="underlined"
@@ -39,7 +40,7 @@ const onSubmit = async () => {
 
       <v-text-field
         v-model="login.password"
-        :rules="[edgeRules.required]"
+        :rules="[edgeGlobal.edgeRules.required]"
         :type="state.passwordShow ? 'text' : 'password'"
         label="Password"
         placeholder="Enter your password"

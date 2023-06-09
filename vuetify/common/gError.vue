@@ -1,13 +1,12 @@
 <script setup>
 import { defineProps } from 'vue'
-
 const props = defineProps({
   error: {
     type: String,
     default: '',
   },
 })
-
+const edgeGlobal = inject('edgeGlobal')
 const firebaseErrorMap = {
   'auth/invalid-email': 'Oops! That doesn\'t look like a valid email address.',
   'auth/user-disabled': 'Oh no! This user account is currently disabled.',

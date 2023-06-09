@@ -1,7 +1,5 @@
 <script setup>
 import { computed, defineProps, onBeforeMount, onMounted, reactive, watch } from 'vue'
-import { dupObject, edgeState, objHas } from '../../global'
-
 const props = defineProps({
   disableTracking: {
     type: Boolean,
@@ -64,6 +62,7 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['update:modelValue'])
+const edgeGlobal = inject('edgeGlobal')
 const state = reactive({
   loaded: true,
   afterMount: false,
@@ -193,7 +192,7 @@ const removeField = (key) => {
 }
 
 const undo = async () => {
-  modelValue.value = dupObject(edgeState.changeTracker[state.trackerKey])
+  modelValue.value = edgeGlobal.dupObject(edgeGlobal.edgeState.changeTracker[state.trackerKey])
   if (props.fieldType === 'array') {
     if (modelValue.value === null) {
       state.order = []
@@ -208,7 +207,7 @@ const undo = async () => {
     }
   }
   if (props.fieldType === 'object') {
-    if (!objHas(modelValue.value, 'flingKeyOrder')) {
+    if (!edgeGlobal.objHas(modelValue.value, 'flingKeyOrder')) {
       state.order = Object.entries(modelValue.value).map(([key, value]) => {
         return {
           key,
@@ -218,7 +217,7 @@ const undo = async () => {
       })
     }
     else {
-      state.order = dupObject(modelValue.value.flingKeyOrder)
+      state.order = edgeGlobal.dupObject(modelValue.value.flingKeyOrder)
     }
   }
   state.loaded = false
@@ -227,14 +226,14 @@ const undo = async () => {
 }
 
 onBeforeMount(() => {
-  modelValue.value = dupObject(props.modelValue)
+  modelValue.value = edgeGlobal.dupObject(props.modelValue)
   if (props.fieldType === 'objectList') {
     props.modelValue.forEach((item, index) => {
       state.objectListOriginalOrder[item.id] = index
     })
   }
   if (props.fieldType === 'object') {
-    if (!objHas(props.modelValue, 'flingKeyOrder')) {
+    if (!edgeGlobal.objHas(props.modelValue, 'flingKeyOrder')) {
       if (props.modelValue === null) {
         state.order = []
       }
@@ -249,7 +248,7 @@ onBeforeMount(() => {
       }
     }
     else {
-      state.order = dupObject(props.modelValue.flingKeyOrder)
+      state.order = edgeGlobal.dupObject(props.modelValue.flingKeyOrder)
     }
   }
   if (props.fieldType === 'array') {
@@ -275,15 +274,15 @@ const removeFieldDialogShow = computed(() => {
 })
 const originalCompare = computed(() => {
   if (props.fieldType === 'objectList' || props.fieldType === 'object' || props.fieldType === 'array') {
-    return JSON.stringify(edgeState.changeTracker[state.trackerKey])
+    return JSON.stringify(edgeGlobal.edgeState.changeTracker[state.trackerKey])
   }
   else {
-    return edgeState.changeTracker[state.trackerKey]
+    return edgeGlobal.edgeState.changeTracker[state.trackerKey]
   }
 })
 
 const isTracked = computed(() => {
-  return objHas(edgeState.changeTracker, state.trackerKey)
+  return edgeGlobal.objHas(edgeGlobal.edgeState.changeTracker, state.trackerKey)
 })
 
 const modelCompare = computed(() => {
@@ -343,9 +342,9 @@ const isNumber = (value) => {
 
 onMounted(() => {
   state.trackerKey = (`${props.parentTrackerId}-${props.label.replaceAll(' ', '-')}`).toLowerCase()
-  if (!objHas(edgeState.changeTracker, state.trackerKey)) {
+  if (!edgeGlobal.objHas(edgeGlobal.edgeState.changeTracker, state.trackerKey)) {
     if (!props.disableTracking) {
-      edgeState.changeTracker[state.trackerKey] = dupObject(modelValue.value)
+      edgeGlobal.edgeState.changeTracker[state.trackerKey] = edgeGlobal.dupObject(modelValue.value)
     }
   }
   state.afterMount = true
@@ -353,13 +352,13 @@ onMounted(() => {
 
 watch(() => state.order, () => {
   if (props.fieldType === 'object') {
-    modelValue.value.flingKeyOrder = dupObject(state.order)
+    modelValue.value.flingKeyOrder = edgeGlobal.dupObject(state.order)
   }
 
   if (props.fieldType === 'array') {
     if (!state.orderUpdateFromWatcher) {
       if (state.order.length > 0) {
-        const currentValues = dupObject(modelValue.value)
+        const currentValues = edgeGlobal.dupObject(modelValue.value)
         modelValue.value = state.order.map((item) => {
           return currentValues[item.key]
         })
@@ -719,7 +718,7 @@ watch(modelValue, () => {
                 <div>
                   <component :is="`form-subtypes-${props.subFieldType}`" v-model:items="modelValue" :item="element" :pass-through-props="passThroughProps" />
                   <v-fade-transition>
-                    <v-alert v-if="isTracked && state.afterMount && (JSON.stringify(modelValue[index]) !== JSON.stringify(edgeState.changeTracker[state.trackerKey][state.objectListOriginalOrder[element.id]]))" class="mt-0 mb-3 text-caption" density="compact" variant="tonal" type="warning">
+                    <v-alert v-if="isTracked && state.afterMount && (JSON.stringify(modelValue[index]) !== JSON.stringify(edgeGlobal.edgeState.changeTracker[state.trackerKey][state.objectListOriginalOrder[element.id]]))" class="mt-0 mb-3 text-caption" density="compact" variant="tonal" type="warning">
                       <v-row dense class="pa-0 ma-0">
                         <v-col v-if="props.fieldType === 'objectList'">
                           This item has been modified
@@ -728,7 +727,7 @@ watch(modelValue, () => {
                           Modified from "{{ originalCompare }}"
                         </v-col>
                         <v-col cols="4" class="text-right">
-                          <v-btn variant="text" class="ml-8" size="x-small" @click="modelValue[index] = edgeState.changeTracker[state.trackerKey][state.objectListOriginalOrder[element.id]]">
+                          <v-btn variant="text" class="ml-8" size="x-small" @click="modelValue[index] = edgeGlobal.edgeState.changeTracker[state.trackerKey][state.objectListOriginalOrder[element.id]]">
                             Undo
                           </v-btn>
                           <!-- <v-btn v-else variant="text" class="ml-8" size="x-small" @click="modelValue = edgeState.changeTracker[state.trackerKey]">

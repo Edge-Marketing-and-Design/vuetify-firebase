@@ -5,6 +5,8 @@ const vueTheme = useTheme()
 const changeTheme = (theme) => {
   vueTheme.global.name.value = theme
 }
+const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
 onMounted(() => {
   if (isDarkMode()) {
     changeTheme('dark')
@@ -13,8 +15,8 @@ onMounted(() => {
     changeTheme('light')
   }
 })
-const edgeFirebase = inject('edgeFirebase')
-edgeState.userRoles = [
+edgeFirebase.runFunction('initFirestore', {})
+edgeGlobal.edgeState.userRoles = [
   {
     name: 'Admin',
     roles: [
@@ -28,7 +30,7 @@ edgeState.userRoles = [
     name: 'User',
     roles: [
       {
-        collectionPath: edgeState.organizationDocPath.replaceAll('/', '-'),
+        collectionPath: 'organizationDocPath',
         role: 'user',
       },
     ],

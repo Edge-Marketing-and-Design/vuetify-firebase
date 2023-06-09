@@ -2,6 +2,7 @@
 import { computed, inject, reactive, watch } from 'vue'
 
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
 
 const state = reactive({
   loaded: true,

@@ -3,6 +3,7 @@ import { App } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 
 const edgeFirebase = inject('edgeFirebase')
+const edgeGlobal = inject('edgeGlobal')
 edgeFirebase.runFunction('initFirestore', {})
 const router = useRouter()
 const route = useRoute()
@@ -56,6 +57,10 @@ function openDeepLink() {
   console.log(state.deepLinkURL)
 }
 
+onBeforeMount(() => {
+  edgeState.value = edgeGlobal.edgeState
+})
+
 onMounted(async () => {
   if (!Capacitor.isNativePlatform()) {
     if (isMobileBrowser()) {
@@ -82,7 +87,7 @@ const page = computed(() => {
   return route.nameedgeFirebase
 })
 
-edgeState.userRoles = [
+edgeGlobal.edgeState.userRoles = [
   {
     name: 'Admin',
     roles: [
@@ -96,7 +101,7 @@ edgeState.userRoles = [
     name: 'User',
     roles: [
       {
-        collectionPath: edgeState.organizationDocPath.replaceAll('/', '-'),
+        collectionPath: 'organizationDocPath',
         role: 'user',
       },
     ],
