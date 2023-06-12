@@ -59,6 +59,7 @@ const props = defineProps({
   passThroughProps: {
     type: [Number, String, Array, Object, Boolean],
     required: false,
+    default: null,
   },
 })
 const emit = defineEmits(['update:modelValue'])

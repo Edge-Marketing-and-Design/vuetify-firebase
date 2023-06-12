@@ -22,6 +22,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  passThroughProps: {
+    type: [Number, String, Array, Object, Boolean],
+    required: false,
+  },
 })
 const edgeFirebase = inject('edgeFirebase')
 const edgeGlobal = inject('edgeGlobal')
