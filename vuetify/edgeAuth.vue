@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, inject, watch } from 'vue'
+import { defineProps, inject, onBeforeMount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import login from './auth/login.vue'
@@ -17,7 +17,17 @@ const props = defineProps({
     type: Array,
     default: () => ['email', 'microsoft'],
   },
+  auth: {
+    type: [Object, String],
+    default: () => ({}),
+  },
+  preLoginRoute: {
+    type: String,
+    default: '',
+  },
 })
+
+const emit = defineEmits(['update:auth'])
 
 const edgeFirebase = inject('edgeFirebase')
 const edgeGlobal = inject('edgeGlobal')
@@ -26,8 +36,7 @@ const router = useRouter()
 
 const doLogin = async () => {
   edgeGlobal.edgeState.user = edgeFirebase.user
-  const auth = useState('auth')
-  auth.value = edgeFirebase.user
+  emit('update:auth', edgeFirebase.user)
   if (edgeFirebase.user.loggedIn) {
     await edgeGlobal.getOrganizations(edgeFirebase)
     const storedOrganization = localStorage.getItem('organizationID')
@@ -41,11 +50,9 @@ const doLogin = async () => {
       await edgeGlobal.setOrganization(edgeGlobal.edgeState.organizations[0].docId, edgeFirebase)
     }
 
-    const preLoginRoute = useState('preLoginRoute')
-
     let cleanedRoute = ''
-    if (preLoginRoute.value) {
-      cleanedRoute = preLoginRoute.value.endsWith('/') ? preLoginRoute.value.slice(0, -1) : preLoginRoute.value
+    if (props.preLoginRoute) {
+      cleanedRoute = props.preLoginRoute.endsWith('/') ? props.preLoginRoute.slice(0, -1) : props.preLoginRoute
     }
 
     if (cleanedRoute === ''
@@ -55,7 +62,7 @@ const doLogin = async () => {
       router.push('/app/dashboard')
     }
     else {
-      router.push(preLoginRoute.value)
+      router.push(props.preLoginRoute)
     }
   }
 }
