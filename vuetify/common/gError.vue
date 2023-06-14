@@ -6,7 +6,6 @@ const props = defineProps({
     default: '',
   },
 })
-const edgeGlobal = inject('edgeGlobal')
 const firebaseErrorMap = {
   'auth/invalid-email': 'Oops! That doesn\'t look like a valid email address.',
   'auth/user-disabled': 'Oh no! This user account is currently disabled.',

@@ -6,7 +6,6 @@ const props = defineProps({
     required: true,
   },
 })
-const edgeGlobal = inject('edgeGlobal')
 const state = reactive({
   snackbar: false,
   buttonIcon: 'mdi-content-copy',

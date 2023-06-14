@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineProps, inject, reactive, watch } from 'vue'
+import { computed, defineProps, inject, nextTick, reactive, watch } from 'vue'
 
 const props = defineProps({
   registrationCode: {

@@ -1,5 +1,4 @@
 <script setup>
-const edgeGlobal = inject('edgeGlobal')
 </script>
 
 <template>

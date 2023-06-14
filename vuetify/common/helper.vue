@@ -7,7 +7,7 @@ const props = defineProps({
     default: null,
   },
 })
-const edgeGlobal = inject('edgeGlobal')
+
 const state = reactive({
   titles: [
     'Help, Help, and Help',
