@@ -10,8 +10,6 @@ export const edgeState = reactive({
   userRoles: [],
 })
 
-declare let projectSetOrg: ((organization: string, edgeFirebase: any) => Promise<void>) | undefined
-
 export const setOrganization = async (organization: string, edgeFirebase: any) => {
   if (organization) {
     edgeState.changeTracker = {}
@@ -19,9 +17,6 @@ export const setOrganization = async (organization: string, edgeFirebase: any) =
     edgeState.currentOrganization = organization
     await edgeFirebase.startUsersSnapshot(`organizations/${organization}`)
     edgeState.organizationDocPath = `organizations/${organization}`
-    if (typeof projectSetOrg !== 'undefined') {
-      await projectSetOrg(organization, edgeFirebase)
-    }
   }
 }
 
@@ -74,6 +69,34 @@ export const currentOrganizationObject = computed(() => {
 })
 
 export const edgeRules = {
+  forms: (value: any) => {
+    if (!value.length) {
+      return 'You must setup at least one form.'
+    }
+    return true
+  },
+  submits: (value: any) => {
+    if (!value.length) {
+      return 'You must setup at least one submit.'
+    }
+    return true
+  },
+  domains: (value: string) => {
+    const domainPattern = /^https?:\/\/(?!:\/\/)([a-zA-Z0-9]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+(\.[a-zA-Z]{2,6})?(:\d{1,5})?$/i
+    const localhostPattern = /^https?:\/\/localhost(:\d{1,5})?$/i
+    const ipAddressPattern = /^https?:\/\/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d{1,5})?$/
+    const domains = value.split(',')
+    for (const domain of domains) {
+      if (
+        !domainPattern.test(domain)
+        && !localhostPattern.test(domain)
+        && !ipAddressPattern.test(domain)
+      ) {
+        return `"${domain}" is not a valid domain or IP address. The domain or IP address must include the protocol (http or https).`
+      }
+    }
+    return true
+  },
   required: (value: string) => {
     if (!value) {
       return 'This field is required.'
@@ -83,6 +106,30 @@ export const edgeRules = {
   email: (value: string) => {
     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return pattern.test(value) || 'Invalid e-mail.'
+  },
+  emailOrField: (value: string) => {
+    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return pattern.test(value) || (value.startsWith('{{') && value.endsWith('}}')) || `Invalid e-mail or field. If you want to use a field, it must be wrapped in double curly braces, e.g. {{${value}}}`
+  },
+  toEmails: (value: string) => {
+    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    const emails = value.split(',')
+    for (const email of emails) {
+      if (!pattern.test(email)) {
+        return `"${email}" is not a valid email address`
+      }
+    }
+    return true
+  },
+  emailsOrFields: (value: string) => {
+    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    const emails = value.split(',')
+    for (const email of emails) {
+      if (!pattern.test(email) && !(email.startsWith('{{') && email.endsWith('}}'))) {
+        return `"${email}" is not a valid email address or field. If you want to use a field, it must be wrapped in double curly braces, e.g. {{${email}}}`
+      }
+    }
+    return true
   },
   password: (value: string) => {
     const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/

@@ -1,6 +1,5 @@
 <script setup>
 import { defineProps, inject, onBeforeMount, watch } from 'vue'
-import { useRouter } from 'vue-router'
 
 import login from './auth/login.vue'
 import register from './auth/register.vue'
@@ -17,22 +16,12 @@ const props = defineProps({
     type: Array,
     default: () => ['email', 'microsoft'],
   },
-  auth: {
-    type: [Object, String],
-    default: () => ({}),
-  },
-  preLoginRoute: {
-    type: String,
-    default: '',
-  },
 })
 
 const emit = defineEmits(['update:auth'])
 
 const edgeFirebase = inject('edgeFirebase')
 const edgeGlobal = inject('edgeGlobal')
-
-const router = useRouter()
 
 const doLogin = async () => {
   edgeGlobal.edgeState.user = edgeFirebase.user
@@ -48,21 +37,6 @@ const doLogin = async () => {
     }
     else if (edgeGlobal.edgeState.organizations.length > 0) {
       await edgeGlobal.setOrganization(edgeGlobal.edgeState.organizations[0].docId, edgeFirebase)
-    }
-
-    let cleanedRoute = ''
-    if (props.preLoginRoute) {
-      cleanedRoute = props.preLoginRoute.endsWith('/') ? props.preLoginRoute.slice(0, -1) : props.preLoginRoute
-    }
-
-    if (cleanedRoute === ''
-    || cleanedRoute === '/app'
-    || cleanedRoute === '/app/login'
-    || cleanedRoute === '/app/signup') {
-      router.push('/app/dashboard')
-    }
-    else {
-      router.push(props.preLoginRoute)
     }
   }
 }
