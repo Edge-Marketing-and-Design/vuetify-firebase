@@ -12,9 +12,6 @@ destination_dir="$project_root/"
 # use rsync to copy files from the source to the destination
 rsync -av --ignore-existing "$source_dir" "$destination_dir"
 
-cp "./src/composables/edgeGlobal.ts" "$project_root/composables/edgeGlobal.ts"
-
-
 # Update the auth middleware
 
 # Extract new block content.

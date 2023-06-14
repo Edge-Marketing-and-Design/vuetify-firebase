@@ -23,8 +23,8 @@
     },
     "dependencies": {
         "@chenfengyuan/vue-number-input": "2",
-        "@edgedev/vuetify-firebase": "^1.0.4",
         "@edgedev/firebase": "latest",
+        "@edgedev/firebase-framework": "latest",
         "vue-json-viewer": "3"
     }
 }

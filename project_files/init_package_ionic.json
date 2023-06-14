@@ -11,7 +11,8 @@
         "build-emulator": "nuxt generate --dotenv .env.dev"
     },
     "dependencies": {
-        "@edgedev/firebase": "^1.9.7",
+        "@edgedev/firebase": "latest",
+        "@edgedev/firebase-framework": "latest",
         "@microsoft/microsoft-graph-client": "^3.0.5",
         "@unocss/reset": "~0.51.12",
         "daisyui": "^2.51.6",
