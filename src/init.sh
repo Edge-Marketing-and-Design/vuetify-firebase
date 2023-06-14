@@ -30,6 +30,7 @@ mv ./node_modules/@edgedev/firebase-framework/project_files/app_${framework}.vue
 
 rsync -av --ignore-existing "./node_modules/@edgedev/firebase-framework/project_files/composables_${framework}/" "./composables/"
 rsync -av --ignore-existing "./node_modules/@edgedev/firebase-framework/project_files/pages_${framework}/" "./pages/"
+rsync -av --ignore-existing "./node_modules/@edgedev/firebase-framework/project_files/plugins_${framework}/" "./plugins/"
 
 pnpm install --shamefully-hoist=true --strict-peer-dependencies=false --unsafe-perm=true --side-effects-cache=false --ignore-scripts=false
 
