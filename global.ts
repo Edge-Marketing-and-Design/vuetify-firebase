@@ -29,11 +29,7 @@ export const isDarkMode = () => {
 }
 
 export const objHas = (obj: any, key: string): boolean => {
-  if (obj === null) {
-    return false
-  }
-  const keys = Object.keys(obj)
-  if (keys.length === 0) {
+  if (obj === null || obj === undefined) {
     return false
   }
   return Object.prototype.hasOwnProperty.call(obj, key)

@@ -15,7 +15,31 @@ const currentOrganization = computed(() => {
 watch(currentOrganization, async () => {
   if (currentOrganization.value) {
     // RUN STUFF HERE WHEN ORGANIZATION CHANGES LIKE SNAPSHOTS
-    projectSetOrg(currentOrganization.value, edgeFirebase)
+    await projectSetOrg(currentOrganization.value, edgeFirebase)
+
+    // KEEP THIS CODE:
+    const auth = useState('auth')
+    auth.value = edgeFirebase.user
+
+    const preLoginRoute = useState('preLoginRoute.value')
+    const router = useRouter()
+
+    let cleanedRoute = ''
+    if (preLoginRoute.value) {
+      cleanedRoute = preLoginRoute.value.endsWith('/') ? preLoginRoute.value.slice(0, -1) : preLoginRoute.value
+    }
+
+    if (cleanedRoute === ''
+    || cleanedRoute === '/app'
+    || cleanedRoute === '/app/login'
+    || cleanedRoute === '/app/signup') {
+      router.push('/app/dashboard')
+    }
+    else {
+      router.push(preLoginRoute.value)
+    }
+
+    console.log(auth.value)
   }
   if (!currentOrganization.value) {
     const auth = useState('auth')
