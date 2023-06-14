@@ -1,4 +1,5 @@
 #!/bin/bash
+#version 1.0.0
 
 # Resolve the symlink and get the actual directory path
 actual_dir=$(readlink -f $(dirname $0))

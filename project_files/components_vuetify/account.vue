@@ -1,12 +1,29 @@
 <script setup>
-// TODO: FIX MENU SO WORKS ON MOBILE
-// TODO: HIDE ORGANIZATION SETTINGS IF DOESN'T HAVE PERMISSIONS
-// TODO: HIDE ORGANIZATION MEMBERS IF  USERS COUNT IS 0
-// TODO: IF BOTH HIDDEN HIDE WHOLE ORGANIZATION MENU
 const route = useRoute()
+const edgeGlobal = inject('edgeGlobal')
 const site = computed(() => {
   return route.params.site
 })
+const metaFields = [
+  {
+    field: 'name',
+    type: 'text',
+    label: 'Name',
+    hint: 'Your name, shown in the user interface.',
+    rules: [edgeGlobal.edgeRules.required],
+  },
+]
+const orgFields = [
+  {
+    field: 'name',
+    type: 'text',
+    label: 'Name',
+    hint: 'Your name, shown in the user interface.',
+    rules: [edgeGlobal.edgeRules.required],
+  },
+]
+
+const config = useRuntimeConfig()
 </script>
 
 <template>
@@ -15,7 +32,7 @@ const site = computed(() => {
       <v-icon class="mx-4">
         mdi-account-group-outline
       </v-icon>
-      {{ currentOrganizationObject.name }}
+      {{ edgeGlobal.currentOrganizationObject.name }}
     </v-toolbar>
     <v-card-text>
       <v-row>
@@ -54,11 +71,12 @@ const site = computed(() => {
           </v-card>
         </v-col>
         <v-col cols="9">
-          <edge-organization-settings v-if="site === 'organization-settings'" />
+          <edge-organization-settings v-if="site === 'organization-settings'" :org-fields="orgFields" />
           <edge-my-account v-if="site === 'my-account'" />
-          <edge-my-profile v-if="site === 'my-profile'" />
+          <edge-my-profile v-if="site === 'my-profile'" :meta-fields="metaFields" />
+          <account-organization-api-keys v-if="site === 'organization-global-variables'" />
           <edge-organization-members v-if="site === 'organization-members'" />
-          <edge-my-organizations v-if="site === 'my-organizations'" />
+          <edge-my-organizations v-if="site === 'my-organizations'" :registration-code="config.public.registrationCode" />
         </v-col>
       </v-row>
     </v-card-text>

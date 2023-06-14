@@ -57,7 +57,6 @@ const title = computed(() => {
           mdi-help-rhombus
         </v-icon>
       </v-toolbar>
-      // eslint-disable-next-line vue/no-v-text-v-html-on-component
       <v-card-text v-html="props.helper" />
     </v-card>
   </v-menu>

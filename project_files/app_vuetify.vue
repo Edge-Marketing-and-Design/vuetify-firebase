@@ -21,7 +21,7 @@ watch(currentOrganization, async () => {
     const auth = useState('auth')
     auth.value = edgeFirebase.user
 
-    const preLoginRoute = useState('preLoginRoute.value')
+    const preLoginRoute = useState('preLoginRoute')
     const router = useRouter()
 
     let cleanedRoute = ''
@@ -61,7 +61,7 @@ watch (user, async () => {
 })
 
 onMounted(() => {
-  if (isDarkMode()) {
+  if (edgeGlobal.isDarkMode()) {
     changeTheme('dark')
   }
   else {
@@ -93,9 +93,11 @@ edgeGlobal.edgeState.userRoles = [
 
 <template>
   <v-app>
+    <top-menu v-if="edgeFirebase.user.loggedIn" />
     <v-main>
       <NuxtPage />
     </v-main>
+    <bottom-menu v-if="edgeFirebase.user.loggedIn" />
   </v-app>
 </template>
 
