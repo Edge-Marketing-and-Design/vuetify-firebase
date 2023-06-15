@@ -113,7 +113,7 @@ const onSubmit = async (event) => {
     state.bypassUnsavedChanges = true
     edgeFirebase.storeDoc(`${edgeGlobal.edgeState.organizationDocPath}/${props.collection}`, state.workingDoc)
     edgeGlobal.edgeState.changeTracker = {}
-    router.push('/app/dashboard')
+    router.push(`/app/dashboard/${props.collection}`)
   }
 }
 
