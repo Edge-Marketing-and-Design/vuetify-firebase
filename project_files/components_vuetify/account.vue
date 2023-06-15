@@ -2,7 +2,7 @@
 const route = useRoute()
 const edgeGlobal = inject('edgeGlobal')
 const site = computed(() => {
-  return route.params.site
+  return route.params.collection
 })
 const metaFields = [
   {
@@ -45,6 +45,7 @@ const config = useRuntimeConfig()
               <v-list-item link to="/app/account/organization-settings">
                 <v-list-item-title>Settings</v-list-item-title>
               </v-list-item>
+
               <v-list-item link to="/app/account/organization-members">
                 <v-list-item-title>Members</v-list-item-title>
               </v-list-item>
@@ -74,7 +75,6 @@ const config = useRuntimeConfig()
           <edge-organization-settings v-if="site === 'organization-settings'" :org-fields="orgFields" />
           <edge-my-account v-if="site === 'my-account'" />
           <edge-my-profile v-if="site === 'my-profile'" :meta-fields="metaFields" />
-          <account-organization-api-keys v-if="site === 'organization-global-variables'" />
           <edge-organization-members v-if="site === 'organization-members'" />
           <edge-my-organizations v-if="site === 'my-organizations'" :registration-code="config.public.registrationCode" />
         </v-col>
