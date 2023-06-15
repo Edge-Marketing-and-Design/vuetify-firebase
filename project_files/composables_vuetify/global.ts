@@ -8,6 +8,8 @@ export const projectSetOrg = async (organization: string, edgeFirebase: any) => 
 }
 
 export const logOut = async (edgeFirebase: any, edgeGlobal: any) => {
+  const auth = useState('auth')
+  auth.value = ''
   globalState.drawer = false
   await edgeGlobal.edgeLogOut(edgeFirebase)
 }
