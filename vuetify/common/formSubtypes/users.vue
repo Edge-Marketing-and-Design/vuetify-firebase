@@ -1,7 +1,5 @@
 <script setup>
 import { computed, defineProps, inject, reactive } from 'vue'
-import { edgeState, getRoleName, orgUserRoles } from '../../../global'
-
 // TODO: If a removed user no longer has roles to any organiztions, need to a create new organization for them with
 // default name of "Personal". This will allow them to continue to use the app.
 
@@ -27,8 +25,9 @@ const props = defineProps({
     required: false,
   },
 })
-const edgeFirebase = inject('edgeFirebase')
+
 const edgeGlobal = inject('edgeGlobal')
+const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   workingItem: {},
   dialog: false,
@@ -42,7 +41,7 @@ const state = reactive({
 })
 
 const roleNamesOnly = computed(() => {
-  return edgeState.userRoles.map((role) => {
+  return edgeGlobal.edgeState.userRoles.map((role) => {
     return role.name
   })
 })
@@ -57,7 +56,7 @@ const newItem = {
 const adminCount = computed(() => {
   return props.items.filter((item) => {
     return item.roles.find((role) => {
-      return role.collectionPath === edgeState.organizationDocPath.replaceAll('/', '-') && role.role === 'admin'
+      return role.collectionPath === edgeGlobal.edgeState.organizationDocPath.replaceAll('/', '-') && role.role === 'admin'
     })
   }).length
 })
@@ -75,7 +74,7 @@ const editItem = (item) => {
   state.saveButton = 'Update User'
   state.workingItem = edgeGlobal.dupObject(item)
   state.workingItem.name = item.meta.name
-  state.workingItem.role = getRoleName(props.item.roles, edgeState.currentOrganization)
+  state.workingItem.role = edgeGlobal.getRoleName(props.item.roles, edgeGlobal.edgeState.currentOrganization)
   const newItemKeys = Object.keys(newItem)
   newItemKeys.forEach((key) => {
     if (state.workingItem[key] === undefined) {
@@ -94,12 +93,12 @@ const deleteConfirm = (item) => {
 const deleteAction = async () => {
   await edgeFirebase.removeUser(state.workingItem.docId)
   state.deleteDialog = false
-  edgeState.changeTracker = {}
+  edgeGlobal.edgeState.changeTracker = {}
 }
 
 const closeDialog = () => {
   state.dialog = false
-  edgeState.changeTracker = {}
+  edgeGlobal.edgeState.changeTracker = {}
 }
 
 const disableTracking = computed(() => {
@@ -109,14 +108,14 @@ const disableTracking = computed(() => {
 const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
-    const userRoles = orgUserRoles(edgeState.currentOrganization)
+    const userRoles = edgeGlobal.orgUserRoles(edgeGlobal.edgeState.currentOrganization)
     const roles = userRoles.find(role => role.name === state.workingItem.role).roles
     if (state.saveButton === 'Invite User') {
       edgeFirebase.addUser({ roles, meta: { name: state.workingItem.name, email: state.workingItem.email } })
     }
     else {
       const oldRoles = state.workingItem.roles.filter((role) => {
-        return role.collectionPath.startsWith(edgeState.organizationDocPath.replaceAll('/', '-'))
+        return role.collectionPath.startsWith(edgeGlobal.edgeState.organizationDocPath.replaceAll('/', '-'))
       })
 
       for (const role of oldRoles) {
@@ -127,7 +126,7 @@ const onSubmit = async (event) => {
         await edgeFirebase.storeUserRoles(state.workingItem.docId, role.collectionPath, role.role)
       }
     }
-    edgeState.changeTracker = {}
+    edgeGlobal.edgeState.changeTracker = {}
     state.dialog = false
   }
 }
@@ -154,7 +153,7 @@ const onSubmit = async (event) => {
     </v-list-item-title>
     <v-list-item-subtitle>
       <v-chip size="small" color="primary">
-        {{ getRoleName(props.item.roles, edgeState.currentOrganization) }}
+        {{ edgeGlobal.getRoleName(props.item.roles, edgeGlobal.edgeState.currentOrganization) }}
       </v-chip>
       <template v-if="!props.item.userId">
         <v-chip size="small" color="primary">
