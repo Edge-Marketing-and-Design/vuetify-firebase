@@ -64,7 +64,7 @@ const adminCount = computed(() => {
 const addItem = () => {
   state.saveButton = 'Invite User'
   state.workingItem = edgeGlobal.dupObject(newItem)
-  state.workingItem.id = generateShortId()
+  state.workingItem.id = edgeGlobal.generateShortId()
   state.currentTitle = 'Invite User'
   state.dialog = true
 }

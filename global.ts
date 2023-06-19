@@ -28,6 +28,10 @@ export const isDarkMode = () => {
   return false
 }
 
+export const generateShortId = () => {
+  return Math.random().toString(36).substr(2, 6)
+}
+
 export const objHas = (obj: any, key: string): boolean => {
   if (obj === null || obj === undefined) {
     return false
