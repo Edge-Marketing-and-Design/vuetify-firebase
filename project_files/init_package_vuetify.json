@@ -25,6 +25,7 @@
         "@chenfengyuan/vue-number-input": "2",
         "@edgedev/firebase": "latest",
         "@edgedev/firebase-framework": "latest",
+        "maska": "^2.1.9",
         "vue-json-viewer": "3"
     }
 }

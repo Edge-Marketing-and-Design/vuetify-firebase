@@ -61,6 +61,11 @@ const props = defineProps({
     required: false,
     default: null,
   },
+  maskOptions: {
+    type: [Object],
+    required: false,
+    default: null,
+  },
 })
 const emit = defineEmits(['update:modelValue'])
 const edgeGlobal = inject('edgeGlobal')
@@ -405,6 +410,7 @@ watch(modelValue, () => {
     <v-text-field
       v-if="props.fieldType === 'text'"
       v-model="modelValue"
+      v-maska:[props.maskOptions]
       variant="underlined"
       :rules="props.rules"
       :label="props.label"
