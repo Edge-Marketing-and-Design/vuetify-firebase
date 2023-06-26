@@ -178,7 +178,7 @@ watch(() => edgeFirebase.data[`${edgeGlobal.edgeState.organizationDocPath}/${pro
               :disable-tracking="props.docId === 'new'"
               :field-type="field.type"
               :rules="[edgeGlobal.edgeRules.required]"
-              :label="capitalizeFirstLetter(name)"
+              :label="field.label"
               :parent-tracker-id="`${props.collection}-${props.docId}`"
               :helper="field.helper"
             />
@@ -187,7 +187,7 @@ watch(() => edgeFirebase.data[`${edgeGlobal.edgeState.organizationDocPath}/${pro
               v-model="state.workingDoc[name]"
               :disable-tracking="props.docId === 'new'"
               field-type="select"
-              :label="capitalizeFirstLetter(name)"
+              :label="field.label"
               :items="subCollection(name)"
               :parent-tracker-id="`${props.collection}-${props.docId}`"
             />

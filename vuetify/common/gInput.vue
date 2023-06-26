@@ -66,6 +66,11 @@ const props = defineProps({
     required: false,
     default: null,
   },
+  bindings: {
+    type: [Object],
+    required: false,
+    default: () => ({ variant: 'underlined' }),
+  },
 })
 const emit = defineEmits(['update:modelValue'])
 const edgeGlobal = inject('edgeGlobal')
@@ -411,7 +416,7 @@ watch(modelValue, () => {
       v-if="props.fieldType === 'text'"
       v-model="modelValue"
       v-maska:[props.maskOptions]
-      variant="underlined"
+      v-bind="props.bindings"
       :rules="props.rules"
       :label="props.label"
       :hint="props.hint"
@@ -427,6 +432,7 @@ watch(modelValue, () => {
       v-model="modelValue"
       :rules="props.rules"
       :label="props.label"
+      v-bind="props.bindings"
     />
     <v-select
       v-if="props.fieldType === 'select'"
@@ -435,7 +441,7 @@ watch(modelValue, () => {
       :clearable="true"
       :label="props.label"
       :items="props.items"
-      variant="underlined"
+      v-bind="props.bindings"
       :return-object="false"
       :disabled="props.disabled"
     >
@@ -450,7 +456,7 @@ watch(modelValue, () => {
       :label="props.label"
       auto-grow
       :rows="props.rows"
-      variant="underlined"
+      v-bind="props.bindings"
     >
       <template v-if="props.helper" #append-inner>
         <helper :helper="props.helper" />
@@ -476,7 +482,7 @@ watch(modelValue, () => {
               v-model="state.newKey"
               class="mb-1"
               label="Key"
-              variant="underlined"
+              v-bind="props.bindings"
               hide-details
             />
           </v-card-text>
@@ -491,7 +497,7 @@ watch(modelValue, () => {
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-card :rounded="0" flat class="fill-height">
+      <v-card v-bind="props.bindings" :rounded="0" flat class="fill-height">
         <v-toolbar class="mb-2" density="compact" flat>
           <v-icon v-if="props.fieldType === 'object'" class="mx-4">
             mdi-set-merge
@@ -528,13 +534,13 @@ watch(modelValue, () => {
                     v-if="props.fieldType === 'object'"
                     v-model="state.fieldInsert.key"
                     :error="state.fieldInsertKeyRequired"
-                    variant="underlined"
+                    v-bind="props.bindings"
                     label="Field Key"
                     :error-messages="state.fieldErrorMessage"
                   />
                   <v-select
                     v-model="state.fieldInsert.type"
-                    variant="underlined"
+                    v-bind="props.bindings"
                     :items="fieldTypes"
                     label="Type"
                     hide-details
@@ -600,7 +606,7 @@ watch(modelValue, () => {
                   <v-icon class="pointer handle" style="position: absolute;left:-8px; top:26px;z-index: 99;">
                     mdi-format-align-justify
                   </v-icon>
-                  <g-input v-model="modelValue[element.key]" :label="getArrayObjectLabel(element.key)" :disable-tracking="true" field-type="array" />
+                  <g-input v-model="modelValue[element.key]" :bindings="props.bindings" :label="getArrayObjectLabel(element.key)" :disable-tracking="true" field-type="array" />
                 </v-container>
                 <v-container v-else :key="`others-${element.key}`" class="py-1">
                   <v-row dense>
@@ -624,7 +630,7 @@ watch(modelValue, () => {
                         v-model="modelValue[element.key]"
                         class="mb-1"
                         :label="getArrayObjectLabel(element.key)"
-                        variant="underlined"
+                        v-bind="props.bindings"
                         placeholder="Enter value here"
                         hide-details
                       />
@@ -635,6 +641,7 @@ watch(modelValue, () => {
                         class="mb-1"
                         hide-details
                         :label="getArrayObjectLabel(element.key)"
+                        v-bind="props.bindings"
                       />
                       <vue-number-input
                         v-else-if="isNumber(modelValue[element.key])"
@@ -644,6 +651,7 @@ watch(modelValue, () => {
                         class="mt-3"
                         controls
                         size="medium"
+                        v-bind="props.bindings"
                       />
                     </v-col>
                     <v-col class="pt-4" cols="1">
@@ -707,7 +715,7 @@ watch(modelValue, () => {
       </v-card>
     </template>
     <template v-if="props.fieldType === 'objectList'">
-      <v-card :rounded="0" flat class="fill-height">
+      <v-card v-bind="props.bindings" :rounded="0" flat class="fill-height">
         <v-card-text class="pa-0">
           <v-toolbar density="compact" color="transparent" flat>
             <v-toolbar-title>{{ props.label }}</v-toolbar-title>
@@ -757,6 +765,7 @@ watch(modelValue, () => {
         v-model="modelValue"
         density="compact"
         :rules="props.rules"
+        v-bind="props.bindings"
       />
     </template>
     <v-fade-transition>
