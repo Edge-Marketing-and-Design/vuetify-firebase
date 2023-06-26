@@ -497,7 +497,7 @@ watch(modelValue, () => {
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-card v-bind="props.bindings" :rounded="0" flat class="fill-height">
+      <v-card :rounded="0" flat class="fill-height">
         <v-toolbar class="mb-2" density="compact" flat>
           <v-icon v-if="props.fieldType === 'object'" class="mx-4">
             mdi-set-merge
@@ -715,7 +715,7 @@ watch(modelValue, () => {
       </v-card>
     </template>
     <template v-if="props.fieldType === 'objectList'">
-      <v-card v-bind="props.bindings" :rounded="0" flat class="fill-height">
+      <v-card :rounded="0" flat class="fill-height">
         <v-card-text class="pa-0">
           <v-toolbar density="compact" color="transparent" flat>
             <v-toolbar-title>{{ props.label }}</v-toolbar-title>
