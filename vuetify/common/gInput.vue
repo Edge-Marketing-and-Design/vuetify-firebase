@@ -415,8 +415,13 @@ watch(modelValue, () => {
     <v-input
       v-if="props.fieldType === 'number'"
       v-model="modelValue"
-      :rules="props.rules"
       v-bind="props.bindings"
+      :rules="props.rules"
+      :label="props.label"
+      :hint="props.hint"
+      :persistent-hint="props.persistentHint"
+      :disabled="props.disabled"
+      class="mt-1"
     >
       <vue-number-input
         v-model="modelValue"
