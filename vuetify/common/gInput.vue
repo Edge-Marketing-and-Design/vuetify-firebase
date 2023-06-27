@@ -412,16 +412,23 @@ watch(modelValue, () => {
 
 <template>
   <div v-if="state.loaded">
-    <vue-number-input
+    <v-input
       v-if="props.fieldType === 'number'"
       v-model="modelValue"
-      :step=".1"
-      controls
-      size="medium"
-      v-bind="props.bindings"
       :rules="props.rules"
-      :disabled="props.disabled"
-    />
+      v-bind="props.bindings"
+    >
+      <vue-number-input
+        v-model="modelValue"
+        :step=".1"
+        controls
+        size="medium"
+        v-bind="props.bindings"
+        :rules="props.rules"
+        :disabled="props.disabled"
+      />
+    </v-input>
+
     <v-text-field
       v-if="props.fieldType === 'text'"
       v-model="modelValue"
