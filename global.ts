@@ -97,8 +97,14 @@ export const edgeRules = {
     }
     return true
   },
-  required: (value: string) => {
-    if (!value) {
+  required: (value: any) => {
+    if (typeof value === 'string' && !value) {
+      return 'This field is required.'
+    }
+    else if (Array.isArray(value) && value.length === 0) {
+      return 'This field is required.'
+    }
+    else if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) {
       return 'This field is required.'
     }
     return true
