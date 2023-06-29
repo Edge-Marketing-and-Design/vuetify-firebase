@@ -29,6 +29,14 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  collectionPath: {
+    type: String,
+    default: '',
+  },
+  collectionTitleField: {
+    type: String,
+    default: '',
+  },
   modelValue: {
     type: [Number, String, Array, Object, Boolean],
   },
@@ -74,6 +82,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 const edgeGlobal = inject('edgeGlobal')
+const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
   loaded: true,
   afterMount: false,
@@ -236,7 +245,7 @@ const undo = async () => {
   state.loaded = true
 }
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   modelValue.value = edgeGlobal.dupObject(props.modelValue)
   if (props.fieldType === 'objectList') {
     props.modelValue.forEach((item, index) => {
@@ -275,6 +284,24 @@ onBeforeMount(() => {
       })
     }
   }
+  if (props.fieldType === 'collection') {
+    if (props.collectionPath) {
+      await edgeFirebase.startSnapshot(props.collectionPath)
+    }
+  }
+})
+
+const collectionItems = computed(() => {
+  if (!props.collectionPath || !props.collectionTitleField) {
+    return []
+  }
+  if (edgeGlobal.objHas(edgeFirebase.data, props.collectionPath) === false) {
+    return []
+  }
+  return Object.values(edgeFirebase.data[props.collectionPath]).map(item => ({
+    title: item[props.collectionTitleField],
+    value: item.docId,
+  }))
 })
 
 const removeFieldDialogShow = computed(() => {
@@ -412,6 +439,21 @@ watch(modelValue, () => {
 
 <template>
   <div v-if="state.loaded">
+    <v-autocomplete
+      v-if="props.fieldType === 'collection'"
+      v-model="modelValue"
+      :rules="props.rules"
+      :clearable="true"
+      :label="props.label"
+      :items="collectionItems"
+      v-bind="props.bindings"
+      :return-object="false"
+      :disabled="props.disabled"
+    >
+      <template v-if="props.helper" #append>
+        <helper :helper="props.helper" />
+      </template>
+    </v-autocomplete>
     <v-input
       v-if="props.fieldType === 'number'"
       v-model="modelValue"
