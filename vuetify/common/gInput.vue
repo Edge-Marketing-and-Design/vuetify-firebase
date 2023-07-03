@@ -388,6 +388,22 @@ onMounted(() => {
   state.afterMount = true
 })
 
+const collectionItem = (id) => {
+  if (!props.collectionPath || !props.collectionTitleField) {
+    return ''
+  }
+  if (!edgeGlobal.objHas(edgeFirebase.data, props.collectionPath)) {
+    return ''
+  }
+  if (!edgeGlobal.objHas(edgeFirebase.data[props.collectionPath], id)) {
+    return ''
+  }
+  if (!edgeGlobal.objHas(edgeFirebase.data[props.collectionPath][id], props.collectionTitleField)) {
+    return ''
+  }
+  return edgeFirebase.data[props.collectionPath][id][props.collectionTitleField]
+}
+
 watch(() => state.order, () => {
   if (props.fieldType === 'object') {
     modelValue.value.flingKeyOrder = edgeGlobal.dupObject(state.order)
@@ -844,7 +860,10 @@ watch(modelValue, () => {
             </v-btn>
           </template>
           <template v-else>
-            <v-col>
+            <v-col v-if="props.fieldType === 'collection'">
+              Modified from "{{ collectionItem(originalCompare) }}" to "{{ collectionItem(modelValue) }}"
+            </v-col>
+            <v-col v-else>
               Modified from "{{ originalCompare }}" to "{{ modelValue }}"
             </v-col>
             <v-col cols="4" class="text-right">
