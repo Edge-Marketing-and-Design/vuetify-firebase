@@ -529,7 +529,7 @@ watch(modelValue, () => {
       :label="props.label"
       :items="props.items"
       v-bind="props.bindings"
-      :return-object="returnObject.value"
+      :return-object="returnObject"
       :disabled="props.disabled"
     >
       <template v-if="props.helper" #append>
