@@ -432,6 +432,13 @@ watch(() => state.order, () => {
 },
 { deep: true })
 
+const returnObject = computed(() => {
+  if (props.bindings && props.bindings['return-object']) {
+    return props.bindings['return-object']
+  }
+  return false
+})
+
 watch(() => state.fieldInsertDialog, () => {
   if (state.fieldInsertDialog) {
     if (props.fieldType === 'array') {
@@ -522,7 +529,7 @@ watch(modelValue, () => {
       :label="props.label"
       :items="props.items"
       v-bind="props.bindings"
-      :return-object="false"
+      :return-object="returnObject.value"
       :disabled="props.disabled"
     >
       <template v-if="props.helper" #append>
