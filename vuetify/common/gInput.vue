@@ -311,7 +311,7 @@ const removeFieldDialogShow = computed(() => {
   return false
 })
 const originalCompare = computed(() => {
-  if (props.fieldType === 'objectList' || props.fieldType === 'object' || props.fieldType === 'array') {
+  if (props.fieldType === 'objectList' || props.fieldType === 'object' || props.fieldType === 'array' || returnObject) {
     return JSON.stringify(edgeGlobal.edgeState.changeTracker[state.trackerKey])
   }
   else {
@@ -324,7 +324,7 @@ const isTracked = computed(() => {
 })
 
 const modelCompare = computed(() => {
-  if (props.fieldType === 'objectList' || props.fieldType === 'object' || props.fieldType === 'array') {
+  if (props.fieldType === 'objectList' || props.fieldType === 'object' || props.fieldType === 'array' || returnObject) {
     return JSON.stringify(modelValue.value)
   }
   else {
@@ -858,7 +858,7 @@ watch(modelValue, () => {
     <v-fade-transition>
       <v-alert v-if="isTracked && state.afterMount && (modelCompare !== originalCompare)" class="mt-0 mb-3 text-caption" density="compact" variant="tonal" type="warning">
         <v-row dense class="pa-0 ma-0">
-          <template v-if="props.fieldType === 'objectList' || props.fieldType === 'object' || props.fieldType === 'array'">
+          <template v-if="props.fieldType === 'objectList' || props.fieldType === 'object' || props.fieldType === 'array' || returnObject">
             <v-col>
               {{ props.label }} has been modified
             </v-col>
