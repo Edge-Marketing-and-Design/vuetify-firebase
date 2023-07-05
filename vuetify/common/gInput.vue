@@ -102,6 +102,13 @@ const state = reactive({
   objectListOriginalOrder: {},
 })
 
+const returnObject = computed(() => {
+  if (props.bindings && props.bindings['return-object']) {
+    return props.bindings['return-object']
+  }
+  return false
+})
+
 const fieldTypes = computed(() => {
   if (props.fieldTypes.length > 0) {
     return props.fieldTypes
@@ -388,6 +395,19 @@ onMounted(() => {
   state.afterMount = true
 })
 
+const userItem = (id) => {
+  if (!edgeGlobal.objHas(edgeFirebase.state.users, id)) {
+    return ''
+  }
+  if (!edgeGlobal.objHas(edgeFirebase.state.users[id], 'meta')) {
+    return ''
+  }
+  if (!edgeGlobal.objHas(edgeFirebase.state.users[id].meta, 'name')) {
+    return ''
+  }
+  return edgeFirebase.state.users[id].meta.name
+}
+
 const collectionItem = (id) => {
   if (!props.collectionPath || !props.collectionTitleField) {
     return ''
@@ -432,13 +452,6 @@ watch(() => state.order, () => {
 },
 { deep: true })
 
-const returnObject = computed(() => {
-  if (props.bindings && props.bindings['return-object']) {
-    return props.bindings['return-object']
-  }
-  return false
-})
-
 watch(() => state.fieldInsertDialog, () => {
   if (state.fieldInsertDialog) {
     if (props.fieldType === 'array') {
@@ -477,6 +490,22 @@ watch(modelValue, () => {
         <helper :helper="props.helper" />
       </template>
     </v-autocomplete>
+    <v-select
+      v-if="props.fieldType === 'users'"
+      v-model="modelValue"
+      :rules="props.rules"
+      :clearable="true"
+      :label="props.label"
+      :items="Object.values(edgeFirebase.state.users)"
+      v-bind="props.bindings"
+      item-title="meta.name"
+      item-value="docId"
+      :disabled="props.disabled"
+    >
+      <template v-if="props.helper" #append>
+        <helper :helper="props.helper" />
+      </template>
+    </v-select>
     <v-input
       v-if="props.fieldType === 'number'"
       v-model="modelValue"
@@ -869,6 +898,9 @@ watch(modelValue, () => {
           <template v-else>
             <v-col v-if="props.fieldType === 'collection'">
               Modified from "{{ collectionItem(originalCompare) }}" to "{{ collectionItem(modelValue) }}"
+            </v-col>
+            <v-col v-else-if="props.fieldType === 'users'">
+              Modified from "{{ userItem(originalCompare) }}" to "{{ userItem(modelValue) }}"
             </v-col>
             <v-col v-else>
               Modified from "{{ originalCompare }}" to "{{ modelValue }}"
