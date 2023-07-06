@@ -11,6 +11,14 @@ const props = defineProps({
     type: Array,
     default: () => ['email', 'microsoft'],
   },
+  title: {
+    type: String,
+    default: 'Organization',
+  },
+  joinMessage: {
+    type: String,
+    default: 'Join an existing organization',
+  },
 })
 const route = useRoute()
 const edgeFirebase = inject('edgeFirebase')
@@ -139,7 +147,7 @@ onMounted(() => {
           color="secondary"
         >
           <template #label>
-            <span class="ml-2">Join an existing organization</span>
+            <span class="ml-2">{{ props.joinMessage }}</span>
           </template>
         </v-checkbox>
 
@@ -156,7 +164,7 @@ onMounted(() => {
           v-model="register.dynamicDocumentFieldValue"
           :rules="[edgeGlobal.edgeRules.required]"
           color="primary"
-          label="Organization"
+          :label="props.title"
           variant="underlined"
         />
 

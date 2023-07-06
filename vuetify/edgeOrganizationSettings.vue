@@ -6,6 +6,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  title: {
+    type: String,
+    default: 'Organization Settings',
+  },
 })
 const edgeFirebase = inject('edgeFirebase')
 const edgeGlobal = inject('edgeGlobal')
@@ -53,7 +57,7 @@ watch(currentOrgData, async () => {
       @submit.prevent="onSubmit"
     >
       <v-card-title class="mb-3">
-        <span class="headline">Organization Settings</span>
+        <span class="headline">{{ props.title }}</span>
       </v-card-title>
       <v-card-text>
         <g-input
@@ -71,9 +75,9 @@ watch(currentOrgData, async () => {
           v-model="edgeGlobal.edgeState.currentOrganization"
           class="mt-5"
           variant="underlined"
-          label="Organization ID"
+          label="ID"
           readonly
-          hint="Identifier for this organization used as part of your form endpoint addresses."
+          hint="Unique Identifier."
           persistent-hint
         >
           <template #prepend-inner>

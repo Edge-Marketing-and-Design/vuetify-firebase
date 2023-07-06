@@ -6,6 +6,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  title: {
+    type: String,
+    default: 'My Organizations',
+  },
 })
 
 const edgeFirebase = inject('edgeFirebase')
@@ -35,9 +39,8 @@ watch(roles, async () => {
       :disable-tracking="true"
       field-type="objectList"
       sub-field-type="myOrgs"
-      label="My Organizations"
+      :label="props.title"
       parent-tracker-id="myOrgs"
-      helper="<p>Organizations</p>"
       :pass-through-props="props.registrationCode"
     />
   </div>

@@ -16,6 +16,14 @@ const props = defineProps({
     type: Array,
     default: () => ['email', 'microsoft'],
   },
+  title: {
+    type: String,
+    default: 'Organization',
+  },
+  joinMessage: {
+    type: String,
+    default: 'Join an existing organization',
+  },
 })
 
 const emit = defineEmits(['update:auth'])
@@ -56,6 +64,8 @@ watch(edgeFirebase.user, async () => {
   <register
     v-else-if="props.type === 'register'"
     :registration-code="props.registrationCode"
+    :title="props.title"
+    :join-message="props.joinMessage"
     :providers="props.providers"
   />
 </template>
