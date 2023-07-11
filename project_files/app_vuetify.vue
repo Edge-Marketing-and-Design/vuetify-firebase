@@ -15,7 +15,7 @@ const currentOrganization = computed(() => {
 watch(currentOrganization, async () => {
   if (currentOrganization.value) {
     // RUN STUFF HERE WHEN ORGANIZATION CHANGES LIKE SNAPSHOTS
-    await projectSetOrg(currentOrganization.value, edgeFirebase)
+    await projectSetOrg(currentOrganization.value, edgeFirebase, edgeGlobal)
 
     // KEEP THIS CODE:
     const auth = useState('auth')

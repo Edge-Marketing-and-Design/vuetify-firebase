@@ -3,7 +3,7 @@ export const globalState = reactive({
   dark: true,
 })
 
-export const projectSetOrg = async (organization: string, edgeFirebase: any) => {
+export const projectSetOrg = async (organization: string, edgeFirebase: any, edgeGlobal: any) => {
   // set Organization Paths and start snapshots here
 }
 
