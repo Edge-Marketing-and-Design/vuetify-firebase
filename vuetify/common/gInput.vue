@@ -116,6 +116,7 @@ const fieldTypes = computed(() => {
   return state.fieldsTypes
 })
 
+// eslint-disable-next-line vue/no-dupe-keys
 const modelValue = ref(null)
 
 const addField = () => {
@@ -293,7 +294,12 @@ onBeforeMount(async () => {
   }
   if (props.fieldType === 'collection') {
     if (props.collectionPath) {
-      await edgeFirebase.startSnapshot(props.collectionPath)
+      // only if startSnapshot is not already running
+      console.log('here')
+      if (edgeGlobal.objHas(edgeFirebase.data, props.collectionPath) === false) {
+        console.log('startSnapshot')
+        await edgeFirebase.startSnapshot(props.collectionPath)
+      }
     }
   }
 })
