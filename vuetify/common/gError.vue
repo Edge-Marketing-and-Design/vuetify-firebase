@@ -30,6 +30,7 @@ const firebaseErrorMap = {
   'firestore/internal': 'Something went wrong on our end. We\'ll look into it!',
   'firestore/invalid-argument': 'You provided an invalid argument. Please double-check!',
   'firestore/cancelled': 'Operation cancelled. No worries!',
+  'auth/popup-closed-by-user': 'Oops! The authentication popup was closed before the process could complete. Please try again.',
   // ... Add more error codes as needed
 }
 
