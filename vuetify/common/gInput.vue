@@ -37,6 +37,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  collectionValueField: {
+    type: String,
+    default: 'docId',
+  },
   modelValue: {
     type: [Number, String, Array, Object, Boolean],
   },
@@ -295,7 +299,6 @@ onBeforeMount(async () => {
   if (props.fieldType === 'collection') {
     if (props.collectionPath) {
       // only if startSnapshot is not already running
-      console.log('here')
       if (edgeGlobal.objHas(edgeFirebase.data, props.collectionPath) === false) {
         console.log('startSnapshot')
         await edgeFirebase.startSnapshot(props.collectionPath)
@@ -311,6 +314,7 @@ const collectionItems = computed(() => {
   if (edgeGlobal.objHas(edgeFirebase.data, props.collectionPath) === false) {
     return []
   }
+
   return Object.values(edgeFirebase.data[props.collectionPath]).map(item => ({
     title: item[props.collectionTitleField],
     value: item.docId,
@@ -430,6 +434,24 @@ const collectionItem = (id) => {
   return edgeFirebase.data[props.collectionPath][id][props.collectionTitleField]
 }
 
+const validateInput = (event) => {
+  // Allow keys that don't result in character input.
+  if (['Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
+    return
+  }
+
+  // Create a copy of the value that would result from this keypress.
+  const proposedValue = event.target.value + event.key
+
+  // Create a regex that matches valid inputs: up to one decimal point, and up to two digits after the decimal point.
+  const regex = /^\d*\.?\d{0,2}$/
+
+  // If the proposed value doesn't match the regex, prevent the keypress.
+  if (!regex.test(proposedValue)) {
+    event.preventDefault()
+  }
+}
+
 watch(() => state.order, () => {
   if (props.fieldType === 'object') {
     modelValue.value.flingKeyOrder = edgeGlobal.dupObject(state.order)
@@ -533,7 +555,23 @@ watch(modelValue, () => {
         :disabled="props.disabled"
       />
     </v-input>
-
+    <v-text-field
+      v-if="props.fieldType === 'money'"
+      v-model="modelValue"
+      v-maska:[props.maskOptions]
+      v-bind="props.bindings"
+      :rules="props.rules"
+      :label="props.label"
+      :hint="props.hint"
+      :persistent-hint="props.persistentHint"
+      :disabled="props.disabled"
+      prefix="$"
+      @keydown="validateInput"
+    >
+      <template v-if="props.helper" #append-inner>
+        <helper :helper="props.helper" />
+      </template>
+    </v-text-field>
     <v-text-field
       v-if="props.fieldType === 'text'"
       v-model="modelValue"
