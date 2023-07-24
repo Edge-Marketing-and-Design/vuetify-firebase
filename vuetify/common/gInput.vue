@@ -88,7 +88,7 @@ const emit = defineEmits(['update:modelValue'])
 const edgeGlobal = inject('edgeGlobal')
 const edgeFirebase = inject('edgeFirebase')
 const state = reactive({
-  loaded: true,
+  loaded: false,
   afterMount: false,
   trackerKey: '',
   helper: false,
@@ -302,9 +302,11 @@ onBeforeMount(async () => {
       if (edgeGlobal.objHas(edgeFirebase.data, props.collectionPath) === false) {
         console.log('startSnapshot')
         await edgeFirebase.startSnapshot(props.collectionPath)
+        console.log(edgeFirebase.data[props.collectionPath])
       }
     }
   }
+  state.loaded = true
 })
 
 const collectionItems = computed(() => {
@@ -314,7 +316,10 @@ const collectionItems = computed(() => {
   if (edgeGlobal.objHas(edgeFirebase.data, props.collectionPath) === false) {
     return []
   }
-
+  // if collection props.collectionValueField is the same as props.collectionTitleField return an a array of vaules of the title field
+  if (props.collectionValueField === props.collectionTitleField) {
+    return Object.values(edgeFirebase.data[props.collectionPath]).map(item => item[props.collectionTitleField])
+  }
   return Object.values(edgeFirebase.data[props.collectionPath]).map(item => ({
     title: item[props.collectionTitleField],
     value: item.docId,
@@ -503,21 +508,38 @@ watch(modelValue, () => {
 
 <template>
   <div v-if="state.loaded">
-    <v-autocomplete
-      v-if="props.fieldType === 'collection'"
-      v-model="modelValue"
-      :rules="props.rules"
-      :clearable="true"
-      :label="props.label"
-      :items="collectionItems"
-      v-bind="props.bindings"
-      :return-object="false"
-      :disabled="props.disabled"
-    >
-      <template v-if="props.helper" #append>
-        <helper :helper="props.helper" />
-      </template>
-    </v-autocomplete>
+    <template v-if="props.fieldType === 'collection'">
+      <v-combobox
+        v-if="props.collectionValueField === props.collectionTitleField"
+        v-model="modelValue"
+        :rules="props.rules"
+        :clearable="true"
+        :label="props.label"
+        :items="collectionItems"
+        v-bind="props.bindings"
+        :return-object="false"
+        :disabled="props.disabled"
+      >
+        <template v-if="props.helper" #append>
+          <helper :helper="props.helper" />
+        </template>
+      </v-combobox>
+      <v-select
+        v-else
+        v-model="modelValue"
+        :rules="props.rules"
+        :clearable="true"
+        :label="props.label"
+        :items="collectionItems"
+        v-bind="props.bindings"
+        :return-object="false"
+        :disabled="props.disabled"
+      >
+        <template v-if="props.helper" #append>
+          <helper :helper="props.helper" />
+        </template>
+      </v-select>
+    </template>
     <v-select
       v-if="props.fieldType === 'users'"
       v-model="modelValue"
@@ -941,10 +963,15 @@ watch(modelValue, () => {
           </template>
           <template v-else>
             <v-col v-if="props.fieldType === 'collection'">
-              Modified from "{{ collectionItem(originalCompare) }}" to "{{ collectionItem(modelValue) }}"
+              <template v-if="props.collectionTitleField !== props.collectionValueField">
+                Modified to "{{ collectionItem(modelValue) }}"
+              </template>
+              <template v-else>
+                Modified from "{{ originalCompare }}" to "{{ modelValue }}"
+              </template>
             </v-col>
             <v-col v-else-if="props.fieldType === 'users'">
-              Modified from "{{ userItem(originalCompare) }}" to "{{ userItem(modelValue) }}"
+              Modified to "{{ userItem(modelValue) }}"
             </v-col>
             <v-col v-else>
               Modified from "{{ originalCompare }}" to "{{ modelValue }}"
