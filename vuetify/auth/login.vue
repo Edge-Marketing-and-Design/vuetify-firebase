@@ -12,6 +12,7 @@ const edgeGlobal = inject('edgeGlobal')
 
 const state = reactive({
   form: false,
+  form2: false,
   phone: '',
   email: '',
   password: '',
@@ -30,7 +31,10 @@ const login = reactive({
 
 const sendPhoneCode = async () => {
   state.confirmationResult = await edgeFirebase.sendPhoneCode(`+1${state.phone}`)
-  state.phoneConfirmDialog = true
+  console.log(state.confirmationResult)
+  if (state.confirmationResult !== false) {
+    state.phoneConfirmDialog = true
+  }
 }
 
 const phoneLogin = async () => {
@@ -145,7 +149,6 @@ onMounted(() => {
     >
       <v-card>
         <v-form
-
           v-model="state.form2"
           validate-on="submit"
           @submit.prevent="phoneLogin"
@@ -158,7 +161,6 @@ onMounted(() => {
             <v-spacer />
 
             <v-btn
-              type="submit"
               color="primary"
               icon
               @click="state.phoneConfirmDialog = false"

@@ -32,6 +32,7 @@ const firebaseErrorMap = {
   'firestore/cancelled': 'Operation cancelled. No worries!',
   'auth/popup-closed-by-user': 'Oops! The authentication popup was closed before the process could complete. Please try again.',
   'auth/invalid-verification-code': 'Uh oh! That verification code doesn\'t seem to be correct. Please try again.',
+  'auth/too-many-requests': 'Whoa! You\'ve made too many attempts in a short period of time. Please wait a bit before trying again.',
   // ... Add more error codes as needed
 }
 
