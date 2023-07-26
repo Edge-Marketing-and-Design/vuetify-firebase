@@ -1,6 +1,12 @@
 <script setup>
 import { inject, reactive } from 'vue'
 
+const props = defineProps({
+  providers: {
+    type: Array,
+    default: () => ['email', 'microsoft'],
+  },
+})
 const edgeFirebase = inject('edgeFirebase')
 const edgeGlobal = inject('edgeGlobal')
 
@@ -30,26 +36,28 @@ const onSubmit = async () => {
       v-model="state.form"
       @submit.prevent="onSubmit"
     >
-      <v-text-field
-        v-model="login.email"
-        :rules="[edgeGlobal.edgeRules.email]"
-        class="mb-2"
-        label="Email"
-        variant="underlined"
-      />
+      <template v-if="props.providers.includes('email')">
+        <v-text-field
+          v-model="login.email"
+          :rules="[edgeGlobal.edgeRules.email]"
+          class="mb-2"
+          label="Email"
+          variant="underlined"
+        />
 
-      <v-text-field
-        v-model="login.password"
-        :rules="[edgeGlobal.edgeRules.required]"
-        :type="state.passwordShow ? 'text' : 'password'"
-        label="Password"
-        placeholder="Enter your password"
-        variant="underlined"
-        :append-inner-icon="state.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
-        @click:append-inner="state.passwordShow = !state.passwordShow"
-      />
+        <v-text-field
+          v-model="login.password"
+          :rules="[edgeGlobal.edgeRules.required]"
+          :type="state.passwordShow ? 'text' : 'password'"
+          label="Password"
+          placeholder="Enter your password"
+          variant="underlined"
+          :append-inner-icon="state.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append-inner="state.passwordShow = !state.passwordShow"
+        />
+      </template>
     </v-form>
-    <v-card-actions>
+    <v-card-actions v-if="props.providers.includes('email') || props.providers.includes('phone')">
       <v-btn
         :disabled="!state.form"
 
@@ -72,7 +80,7 @@ const onSubmit = async () => {
       class="my-4"
     />
     Don't have an account?
-    <v-btn disabled color="success" small block to="/app/signup">
+    <v-btn color="success" small block to="/app/signup">
       Sign up here.
     </v-btn>
   </v-card>

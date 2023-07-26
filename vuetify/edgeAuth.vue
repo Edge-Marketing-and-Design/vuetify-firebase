@@ -14,7 +14,7 @@ const props = defineProps({
   },
   providers: {
     type: Array,
-    default: () => ['email', 'microsoft'],
+    default: () => ['email', 'phone', 'microsoft'],
   },
   title: {
     type: String,

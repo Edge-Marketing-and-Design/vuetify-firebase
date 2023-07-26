@@ -1,4 +1,5 @@
 <script setup>
+// TODO: PHONE LOGIN NEXT
 import { defineProps, inject, onMounted, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -29,10 +30,13 @@ const state = reactive({
   passwordShow: false,
   terms: false,
   form: false,
+  form2: false,
   provider: 0,
   error: { error: false, message: '' },
   registrationCode: '',
   showRegistrationCode: false,
+  phone: '',
+  phoneConfirmDialog: false,
 })
 
 const register = reactive({
@@ -41,29 +45,43 @@ const register = reactive({
   password: '',
   registrationCode: props.registrationCode, // TODO - This should come from .env since it will be different on production
   dynamicDocumentFieldValue: '',
+  confirmationResult: null,
+  phoneCode: '',
 })
+
 const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
-    let provider = 'email'
-    if (state.provider === 1) {
-      provider = 'microsoft'
+    if (state.provider === 'phone') {
+      register.confirmationResult = await edgeFirebase.sendPhoneCode(`+1${state.phone}`)
+      state.phoneConfirmDialog = true
     }
-    if (state.showRegistrationCode) {
-      register.registrationCode = state.registrationCode
+    else {
+      if (state.showRegistrationCode) {
+        register.registrationCode = state.registrationCode
+      }
+      const result = await edgeFirebase.registerUser(register, state.provider)
+      state.error.error = !result.success
+      state.error.message = result.message.code
     }
-    const result = await edgeFirebase.registerUser(register, provider)
-    state.error.error = !result.success
-    state.error.message = result.message.code
   }
 }
 onMounted(() => {
+  state.provider = props.providers[0]
   const regCode = route.query['reg-code'] ? route.query['reg-code'] : ''
   state.registrationCode = regCode
   if (regCode) {
     state.showRegistrationCode = true
   }
 })
+const phoneRegister = async (event) => {
+  const results = await event
+  if (results.valid) {
+    const result = await edgeFirebase.registerUser(register, state.provider)
+    state.error.error = !result.success
+    state.error.message = result.message.code
+  }
+}
 </script>
 
 <template>
@@ -83,9 +101,10 @@ onMounted(() => {
         Choose a login method:
         <v-item-group v-model="state.provider" mandatory>
           <v-divider
+            v-if="props.providers.includes('email')"
             class="my-2"
           />
-          <v-item v-slot="{ selectedClass, toggle }">
+          <v-item v-if="props.providers.includes('email')" v-slot="{ selectedClass, toggle }" value="email">
             <v-btn
               :prepend-icon="selectedClass ? 'mdi-check' : ''"
               :class="[selectedClass ? 'bg-primary' : 'bg-grey']"
@@ -96,9 +115,10 @@ onMounted(() => {
             </v-btn>
           </v-item>
           <v-divider
+            v-if="props.providers.includes('microsoft')"
             class="my-2"
           />
-          <v-item v-slot="{ selectedClass, toggle }">
+          <v-item v-if="props.providers.includes('microsoft')" v-slot="{ selectedClass, toggle }" value="microsoft">
             <v-btn
               :prepend-icon="selectedClass ? 'mdi-check' : ''"
               :class="[selectedClass ? 'bg-primary' : 'bg-grey']"
@@ -111,9 +131,23 @@ onMounted(() => {
           <v-divider
             class="my-2"
           />
+          <v-item v-if="props.providers.includes('phone')" v-slot="{ selectedClass, toggle }" value="phone">
+            <v-btn
+              :prepend-icon="selectedClass ? 'mdi-check' : ''"
+              :class="[selectedClass ? 'bg-primary' : 'bg-grey']"
+              block
+              @click="toggle"
+            >
+              Phone
+            </v-btn>
+          </v-item>
+          <v-divider
+            v-if="props.providers.includes('phone')"
+            class="my-2"
+          />
         </v-item-group>
         <v-text-field
-          v-if="state.provider === 0"
+          v-if="state.provider === 'email'"
           v-model="register.email"
           :rules="[edgeGlobal.edgeRules.email]"
           class="mb-2"
@@ -122,7 +156,7 @@ onMounted(() => {
         />
 
         <v-text-field
-          v-if="state.provider === 0"
+          v-if="state.provider === 'email'"
           v-model="register.password"
           :rules="[edgeGlobal.edgeRules.password]"
           :append-inner-icon="state.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
@@ -131,6 +165,16 @@ onMounted(() => {
           placeholder="Enter your password"
           variant="underlined"
           @click:append-inner="state.passwordShow = !state.passwordShow"
+        />
+
+        <g-input
+          v-if="state.provider === 'phone'"
+          v-model="state.phone"
+          :disable-tracking="true"
+          field-type="text"
+          :rules="[edgeGlobal.edgeRules.required]"
+          label="Phone Number"
+          :mask-options="{ mask: '(###) ###-####' }"
         />
 
         <v-text-field
@@ -192,5 +236,65 @@ onMounted(() => {
         Sign in here.
       </v-btn>
     </v-form>
+    <v-dialog
+      v-model="state.phoneConfirmDialog"
+      persistent
+      max-width="600"
+      transition="fade-transition"
+    >
+      <v-card>
+        <v-form
+
+          v-model="state.form2"
+          validate-on="submit"
+          @submit.prevent="phoneRegister"
+        >
+          <v-toolbar flat>
+            <v-icon class="mx-4">
+              mdi-list-box
+            </v-icon>
+            Enter Confirmation Code
+            <v-spacer />
+
+            <v-btn
+              type="submit"
+              color="primary"
+              icon
+              @click="state.phoneConfirmDialog = false"
+            >
+              <v-icon> mdi-close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-title>Enter Confirmation Code</v-card-title>
+          <v-card-text>
+            Please enter the confirmation code that you received via text message. This code is used to verify your phone number. If you did not receive a text message, please confirm that your phone number is correct and request a new code.
+            <v-text-field
+              v-model="register.phoneCode"
+              :rules="[edgeGlobal.edgeRules.required]"
+              color="primary"
+              label="Confirmation Code"
+              variant="underlined"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              color="blue-darken-1"
+              variant="text"
+              @click="state.phoneConfirmDialog = false"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              type="submit"
+              color="error"
+              variant="text"
+            >
+              Submit
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
