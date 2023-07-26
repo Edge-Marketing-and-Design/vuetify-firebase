@@ -81,6 +81,7 @@ const phoneRegister = async (event) => {
     state.error.error = !result.success
     state.error.message = result.message.code
   }
+  state.phoneConfirmDialog = false
 }
 </script>
 

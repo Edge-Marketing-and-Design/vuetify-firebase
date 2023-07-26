@@ -31,6 +31,7 @@ const firebaseErrorMap = {
   'firestore/invalid-argument': 'You provided an invalid argument. Please double-check!',
   'firestore/cancelled': 'Operation cancelled. No worries!',
   'auth/popup-closed-by-user': 'Oops! The authentication popup was closed before the process could complete. Please try again.',
+  'auth/invalid-verification-code': 'Uh oh! That verification code doesn\'t seem to be correct. Please try again.',
   // ... Add more error codes as needed
 }
 
@@ -38,11 +39,12 @@ const getReadableFirebaseError = (errorCode) => {
   let code = ''
 
   if (typeof errorCode === 'string') {
-    code = errorCode
+    const match = errorCode.match(/(?:Firebase: Error \()?([a-z/,-]+)\)?/)
+    code = match ? match[1] : ''
   }
   else if (errorCode instanceof Error) {
-    const match = errorCode.message.match(/[a-z]+\/[a-z-]+/)
-    code = match ? match[0] : ''
+    const match = errorCode.message.match(/(?:Firebase: Error \()?([a-z/,-]+)\)?/)
+    code = match ? match[1] : ''
   }
 
   if (!code) {
@@ -50,22 +52,14 @@ const getReadableFirebaseError = (errorCode) => {
     return 'An invalid error code was received. Please try again later.'
   }
 
-  const errorKeys = Object.keys(firebaseErrorMap)
-  let readableError = ''
-
-  for (const key of errorKeys) {
-    if (code.startsWith(key)) {
-      readableError = firebaseErrorMap[key]
-      break
-    }
-  }
+  const readableError = firebaseErrorMap[code]
 
   if (readableError) {
     return readableError
   }
   else {
     console.log('Unknown Firebase error:', errorCode)
-    return errorCode
+    return errorCode instanceof Error ? errorCode.message : errorCode
   }
 }
 </script>
