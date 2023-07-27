@@ -107,6 +107,9 @@ export const edgeRules = {
     else if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) {
       return 'This field is required.'
     }
+    else if (typeof value === 'boolean' && !value) {
+      return 'This field is required.'
+    }
     return true
   },
   email: (value: string) => {
