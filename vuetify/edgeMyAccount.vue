@@ -73,7 +73,12 @@ const currentOrgName = computed(() => {
   return edgeFirebase.data[edgeGlobal.edgeState.organizationDocPath].name
 })
 onBeforeMount(() => {
-  state.username = edgeFirebase.user.firebaseUser.providerData[0].email
+  if (edgeFirebase.user.firebaseUser.providerData.length === 0) {
+    state.username = edgeFirebase.user.uid
+  }
+  else {
+    state.username = edgeFirebase.user.firebaseUser.providerData[0].email
+  }
 })
 watch(currentOrgName, async () => {
   state.org = currentOrgName.value
@@ -90,7 +95,16 @@ watch(currentOrgName, async () => {
       <span class="headline">My Account</span>
     </v-card-title>
     <v-card-text>
-      <template v-if="edgeFirebase.user.firebaseUser.providerData[0].providerId === 'password'">
+      <template v-if="edgeFirebase.user.firebaseUser.providerData.length === 0">
+        <v-alert>
+          Logged in as:
+          <v-alert-title>{{ state.username }}</v-alert-title>
+          <strong>Custom Provider</strong>
+          <v-divider class="my-4" />
+          Notice: You're signed in with a custom provider. Nothing to update here.
+        </v-alert>
+      </template>
+      <template v-else-if="edgeFirebase.user.firebaseUser.providerData[0].providerId === 'password'">
         <span class="headline">Update Email</span>
         <v-form
           v-model="state.userForm"

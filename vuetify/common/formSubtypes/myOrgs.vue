@@ -38,7 +38,7 @@ const addItem = () => {
   console.log(newItem)
   state.saveButton = 'Add Organization'
   state.workingItem = edgeGlobal.dupObject(newItem)
-  state.workingItem.id = generateShortId()
+  state.workingItem.id = edgeGlobal.generateShortId()
   state.currentTitle = 'Add Organization'
   state.dialog = true
 }
@@ -46,7 +46,7 @@ const addItem = () => {
 const joinOrg = () => {
   state.saveButton = 'Join Organization'
   state.workingItem = edgeGlobal.dupObject(newItem)
-  state.workingItem.id = generateShortId()
+  state.workingItem.id = edgeGlobal.generateShortId()
   state.currentTitle = 'Join Organization'
   state.dialog = true
 }
