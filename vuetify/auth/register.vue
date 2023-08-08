@@ -1,7 +1,8 @@
 <script setup>
 // TODO: PHONE LOGIN NEXT
+// TODO:  Cannot click "Add Organization" or "Join Organization" because of generateShortId error
 import { defineProps, inject, onMounted, reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps({
   registrationCode: {
@@ -21,6 +22,9 @@ const props = defineProps({
     default: 'Join an existing organization',
   },
 })
+
+const router = useRouter()
+
 const route = useRoute()
 const edgeFirebase = inject('edgeFirebase')
 const edgeGlobal = inject('edgeGlobal')
@@ -45,7 +49,7 @@ const register = reactive({
   password: '',
   registrationCode: props.registrationCode, // TODO - This should come from .env since it will be different on production
   dynamicDocumentFieldValue: '',
-  confirmationResult: null,
+  phoneNumber: null,
   phoneCode: '',
 })
 
@@ -53,8 +57,30 @@ const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
     if (state.provider === 'phone') {
-      register.confirmationResult = await edgeFirebase.sendPhoneCode(`+1${state.phone}`)
-      state.phoneConfirmDialog = true
+      register.phoneNumber = await edgeFirebase.sendPhoneCode(`${state.phone}`)
+      if (register.phoneNumber !== false) {
+        state.phoneConfirmDialog = true
+      }
+    }
+    else if (state.provider === 'emailLink') {
+    // TODO - DO OUR OWN PHONE CODE... PUT IN FUNCTIONS AND PUT IN COLLECITON.. THEN USE CUSTOM AUTH
+    // TODO on beforeMount need to take query params and set them to the register object, state, object...
+    // that means that we put in the query params not just the keys but something to identify what object the keys belong to
+    // maybe all of this work should be in the sendEmailLink function
+    // Flatten the nested object
+      const flattenRegister = {
+        ...state,
+        ...register,
+        ...register.meta,
+      }
+      delete flattenRegister.meta
+      delete flattenRegister.error
+
+      const queryString = Object.keys(flattenRegister).map(key => `${key}=${encodeURIComponent(flattenRegister[key])}`).join('&')
+      const url = `/app/signup?${queryString}`
+      router.push(url)
+
+    // state.phoneConfirmDialog = true
     }
     else {
       if (state.showRegistrationCode) {
@@ -116,6 +142,20 @@ const phoneRegister = async (event) => {
             </v-btn>
           </v-item>
           <v-divider
+            v-if="props.providers.includes('emailLink')"
+            class="my-2"
+          />
+          <v-item v-if="props.providers.includes('emailLink')" v-slot="{ selectedClass, toggle }" value="emailLink">
+            <v-btn
+              :prepend-icon="selectedClass ? 'mdi-check' : ''"
+              :class="[selectedClass ? 'bg-primary' : 'bg-grey']"
+              block
+              @click="toggle"
+            >
+              Email Link
+            </v-btn>
+          </v-item>
+          <v-divider
             v-if="props.providers.includes('microsoft')"
             class="my-2"
           />
@@ -148,7 +188,7 @@ const phoneRegister = async (event) => {
           />
         </v-item-group>
         <v-text-field
-          v-if="state.provider === 'email'"
+          v-if="state.provider === 'email' || state.provider === 'emailLink'"
           v-model="register.email"
           :rules="[edgeGlobal.edgeRules.email]"
           class="mb-2"
@@ -230,6 +270,7 @@ const phoneRegister = async (event) => {
           Submit
         </v-btn>
       </v-card-actions>
+      <g-error v-if="edgeFirebase.user.logInError" :error="edgeFirebase.user.logInErrorMessage" />
       <g-error v-if="state.error.error" :error="state.error.message" />
       <v-divider class="py-4" />
       Already have an account?

@@ -20,7 +20,7 @@ const state = reactive({
   passwordShow: false,
   panel: '',
   phoneConfirmDialog: false,
-  confirmationResult: null,
+  phoneNumber: null,
   phoneCode: '',
 })
 
@@ -30,15 +30,14 @@ const login = reactive({
 })
 
 const sendPhoneCode = async () => {
-  state.confirmationResult = await edgeFirebase.sendPhoneCode(`+1${state.phone}`)
-  console.log(state.confirmationResult)
-  if (state.confirmationResult !== false) {
+  state.phoneNumber = await edgeFirebase.sendPhoneCode(`${state.phone}`)
+  if (state.phoneNumber !== false) {
     state.phoneConfirmDialog = true
   }
 }
 
 const phoneLogin = async () => {
-  await edgeFirebase.logInWithPhone(state.confirmationResult, state.phoneCode)
+  await edgeFirebase.logInWithPhone(state.phoneNumber, state.phoneCode)
   state.phoneConfirmDialog = false
 }
 
