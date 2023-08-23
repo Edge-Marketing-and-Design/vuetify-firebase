@@ -496,7 +496,7 @@ watch(() => state.fieldInsertDialog, () => {
 },
 { deep: true })
 
-const propsModelValue = computered(() => {
+const propsModelValue = computed(() => {
   return props.modelValue
 })
 
