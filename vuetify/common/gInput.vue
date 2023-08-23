@@ -496,6 +496,16 @@ watch(() => state.fieldInsertDialog, () => {
 },
 { deep: true })
 
+const propsModelValue = computered(() => {
+  return props.modelValue
+})
+
+watch(propsModelValue, () => {
+  state.afterMount = false
+  modelValue.value = edgeGlobal.dupObject(props.modelValue)
+  state.afterMount = true
+}, { deep: true })
+
 watch(modelValue, () => {
   if (state.afterMount) {
     emit('update:modelValue', modelValue.value)
