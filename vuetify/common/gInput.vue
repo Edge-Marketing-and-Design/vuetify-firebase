@@ -496,15 +496,15 @@ watch(() => state.fieldInsertDialog, () => {
 },
 { deep: true })
 
-const propsModelValue = computed(() => {
-  return props.modelValue
-})
+// const propsModelValue = computed(() => {
+//   return props.modelValue
+// })
 
-watch(propsModelValue, () => {
-  state.afterMount = false
-  modelValue.value = edgeGlobal.dupObject(props.modelValue)
-  state.afterMount = true
-}, { deep: true })
+// watch(propsModelValue, () => {
+//   state.afterMount = false
+//   modelValue.value = edgeGlobal.dupObject(props.modelValue)
+//   state.afterMount = true
+// }, { deep: true })
 
 watch(modelValue, () => {
   if (state.afterMount) {
