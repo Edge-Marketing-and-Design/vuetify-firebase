@@ -24,6 +24,8 @@ const state = reactive({
   phoneCode: '',
 })
 
+const multipleProviders = computed(() => props.providers.length > 1)
+
 const login = reactive({
   email: '',
   password: '',
@@ -49,7 +51,6 @@ const onSubmit = async () => {
     await sendPhoneCode()
   }
 }
-
 onMounted(() => {
   state.panel = props.providers[0]
 })
@@ -58,14 +59,14 @@ onMounted(() => {
 <template>
   <logging-in v-if="edgeFirebase.user.loggingIn || edgeFirebase.user.loggedIn" />
 
-  <v-card v-else class="mx-auto px-6 py-8" title="Login" max-width="344">
+  <v-card v-else flat class="mx-auto px-6 py-8" title="Login" max-width="344">
     <v-form
       v-model="state.form"
       @submit.prevent="onSubmit"
     >
       <v-expansion-panels v-model="state.panel">
-        <v-expansion-panel v-for="provider in props.providers" :key="provider" :value="provider">
-          <v-expansion-panel-title expand-icon="mdi-square-outline" class="py-0" collapse-icon="mdi-check">
+        <v-expansion-panel v-for="provider in props.providers" :key="provider" elevation="0" :value="provider">
+          <v-expansion-panel-title v-if="multipleProviders" expand-icon="mdi-square-outline" class="py-0" collapse-icon="mdi-check">
             <template v-if="provider === 'email'">
               Sign in with Email
             </template>

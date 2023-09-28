@@ -21,29 +21,36 @@ const copyToClipboard = async (text) => {
 </script>
 
 <template>
-  <v-btn
+  <!-- <v-btn
     variant="text"
     icon
+    size="small"
+    @click.stop="copyToClipboard(props.text)"
+  > -->
+  <v-icon
+    size="small"
+    class="mr-1"
     @click.stop="copyToClipboard(props.text)"
   >
-    <v-icon> {{ state.buttonIcon }}</v-icon>
-    <v-snackbar
-      v-model="state.snackbar"
-      :timeout="3000"
-      location="center"
-    >
-      Copied to clipboard
-      <template #actions>
-        <v-btn
-          color="grey-darken-5"
-          variant="text"
-          @click="state.snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-  </v-btn>
+    {{ state.buttonIcon }}
+  </v-icon>
+  <v-snackbar
+    v-model="state.snackbar"
+    :timeout="3000"
+    location="center"
+  >
+    Copied to clipboard
+    <template #actions>
+      <v-btn
+        color="grey-darken-5"
+        variant="text"
+        @click="state.snackbar = false"
+      >
+        Close
+      </v-btn>
+    </template>
+  </v-snackbar>
+  <!-- </v-btn> -->
 </template>
 
 <style lang="scss" scoped>

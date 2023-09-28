@@ -91,10 +91,10 @@ watch(currentOrgName, async () => {
 
 <template>
   <v-card v-if="state.loaded" variant="flat">
-    <v-card-title class="mb-3">
-      <span class="headline">My Account</span>
-    </v-card-title>
     <v-card-text>
+      <h3 class="mb-3">
+        My Account
+      </h3>
       <template v-if="edgeFirebase.user.firebaseUser.providerData.length === 0">
         <v-alert>
           Logged in as:

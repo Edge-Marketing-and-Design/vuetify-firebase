@@ -24,6 +24,14 @@ const props = defineProps({
     type: String,
     default: 'Join an existing organization',
   },
+  termsLinks: {
+    type: String,
+    default: '',
+  },
+  singleOrganization: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:auth'])
@@ -63,10 +71,12 @@ watch(edgeFirebase.user, async () => {
   />
   <register
     v-else-if="props.type === 'register'"
+    :single-organization="props.singleOrganization"
     :registration-code="props.registrationCode"
     :title="props.title"
     :join-message="props.joinMessage"
     :providers="props.providers"
+    :terms-links="props.termsLinks"
   />
 </template>
 

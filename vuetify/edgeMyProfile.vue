@@ -51,10 +51,10 @@ watch(currentMeta, async () => {
       validate-on="submit"
       @submit.prevent="onSubmit"
     >
-      <v-card-title class="mb-3">
-        <span class="headline">My Profile</span>
-      </v-card-title>
       <v-card-text>
+        <h3 class="mb-3">
+          My Profile
+        </h3>
         <g-input
           v-for="field in props.metaFields"
           :key="field.field"

@@ -21,7 +21,17 @@ const props = defineProps({
     type: String,
     default: 'Join an existing organization',
   },
+  termsLinks: {
+    type: String,
+    default: '',
+  },
+  singleOrganization: {
+    type: Boolean,
+    default: false,
+  },
 })
+
+const multipleProviders = computed(() => props.providers.length > 1)
 
 const router = useRouter()
 
@@ -56,6 +66,9 @@ const register = reactive({
 const onSubmit = async (event) => {
   const results = await event
   if (results.valid) {
+    if (props.singleOrganization) {
+      register.dynamicDocumentFieldValue = register.meta.name
+    }
     if (state.provider === 'phone') {
       register.phoneNumber = await edgeFirebase.sendPhoneCode(`${state.phone}`)
       if (register.phoneNumber !== false) {
@@ -125,8 +138,8 @@ const phoneRegister = async (event) => {
       @submit.prevent="onSubmit"
     >
       <v-container>
-        Choose a login method:
-        <v-item-group v-model="state.provider" mandatory>
+        <span v-if="multipleProviders">Choose a login method:</span>
+        <v-item-group v-if="multipleProviders" v-model="state.provider" mandatory>
           <v-divider
             v-if="props.providers.includes('email')"
             class="my-2"
@@ -226,6 +239,7 @@ const phoneRegister = async (event) => {
           variant="underlined"
         />
         <v-checkbox
+          v-if="!props.singleOrganization"
           v-model="state.showRegistrationCode"
           class="my-0"
           hide-details
@@ -235,23 +249,24 @@ const phoneRegister = async (event) => {
             <span class="ml-2">{{ props.joinMessage }}</span>
           </template>
         </v-checkbox>
-
-        <v-text-field
-          v-if="state.showRegistrationCode"
-          v-model="state.registrationCode"
-          :rules="[edgeGlobal.edgeRules.required]"
-          color="primary"
-          label="Registration Code"
-          variant="underlined"
-        />
-        <v-text-field
-          v-else
-          v-model="register.dynamicDocumentFieldValue"
-          :rules="[edgeGlobal.edgeRules.required]"
-          color="primary"
-          :label="props.title"
-          variant="underlined"
-        />
+        <template v-if="!props.singleOrganization">
+          <v-text-field
+            v-if="state.showRegistrationCode"
+            v-model="state.registrationCode"
+            :rules="[edgeGlobal.edgeRules.required]"
+            color="primary"
+            label="Registration Code"
+            variant="underlined"
+          />
+          <v-text-field
+            v-else
+            v-model="register.dynamicDocumentFieldValue"
+            :rules="[edgeGlobal.edgeRules.required]"
+            color="primary"
+            :label="props.title"
+            variant="underlined"
+          />
+        </template>
 
         <v-checkbox
           v-model="state.terms"
