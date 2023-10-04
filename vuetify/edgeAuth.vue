@@ -32,6 +32,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showRequestedOrgId: {
+    type: Boolean,
+    default: false,
+  },
+  requestedOrgIdLabel: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:auth'])
@@ -77,6 +85,8 @@ watch(edgeFirebase.user, async () => {
     :join-message="props.joinMessage"
     :providers="props.providers"
     :terms-links="props.termsLinks"
+    :show-requested-org-id="props.showRequestedOrgId"
+    :requested-org-id-label="props.requestedOrgIdLabel"
   />
 </template>
 

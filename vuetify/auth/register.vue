@@ -29,6 +29,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showRequestedOrgId: {
+    type: Boolean,
+    default: false,
+  },
+  requestedOrgIdLabel: {
+    type: String,
+    default: '',
+  },
 })
 
 const multipleProviders = computed(() => props.providers.length > 1)
@@ -61,6 +69,7 @@ const register = reactive({
   dynamicDocumentFieldValue: '',
   phoneNumber: null,
   phoneCode: '',
+  requestedOrgId: '',
 })
 
 const onSubmit = async (event) => {
@@ -76,11 +85,6 @@ const onSubmit = async (event) => {
       }
     }
     else if (state.provider === 'emailLink') {
-    // TODO - DO OUR OWN PHONE CODE... PUT IN FUNCTIONS AND PUT IN COLLECITON.. THEN USE CUSTOM AUTH
-    // TODO on beforeMount need to take query params and set them to the register object, state, object...
-    // that means that we put in the query params not just the keys but something to identify what object the keys belong to
-    // maybe all of this work should be in the sendEmailLink function
-    // Flatten the nested object
       const flattenRegister = {
         ...state,
         ...register,
@@ -121,6 +125,13 @@ const phoneRegister = async (event) => {
     state.error.message = result.message.code
   }
   state.phoneConfirmDialog = false
+}
+function validateInput(event) {
+  const pattern = /^(?!.*__)[a-zA-Z0-9_]*$/
+  const testString = event.target.value + event.key
+  if (!pattern.test(testString)) {
+    event.preventDefault()
+  }
 }
 </script>
 
@@ -234,16 +245,24 @@ const phoneRegister = async (event) => {
         <v-text-field
           v-model="register.meta.name"
           :rules="[edgeGlobal.edgeRules.required]"
-          color="primary"
           label="Name"
           variant="underlined"
+        />
+        <v-text-field
+          v-if="props.showRequestedOrgId"
+          v-model="register.requestedOrgId"
+          :rules="[edgeGlobal.edgeRules.required]"
+
+          :label="props.requestedOrgIdLabel"
+          variant="underlined"
+          hint="Once submitted, this cannot be changed. Only use letters, numbers, and underscores."
+          @keypress="validateInput"
         />
         <v-checkbox
           v-if="!props.singleOrganization"
           v-model="state.showRegistrationCode"
           class="my-0"
           hide-details
-          color="secondary"
         >
           <template #label>
             <span class="ml-2">{{ props.joinMessage }}</span>
@@ -254,7 +273,6 @@ const phoneRegister = async (event) => {
             v-if="state.showRegistrationCode"
             v-model="state.registrationCode"
             :rules="[edgeGlobal.edgeRules.required]"
-            color="primary"
             label="Registration Code"
             variant="underlined"
           />
@@ -262,7 +280,6 @@ const phoneRegister = async (event) => {
             v-else
             v-model="register.dynamicDocumentFieldValue"
             :rules="[edgeGlobal.edgeRules.required]"
-            color="primary"
             :label="props.title"
             variant="underlined"
           />
@@ -271,9 +288,11 @@ const phoneRegister = async (event) => {
         <v-checkbox
           v-model="state.terms"
           :rules="[edgeGlobal.edgeRules.required]"
-          color="secondary"
           label="I agree to site terms and conditions"
         />
+        <v-btn v-if="props.termsLinks" class="mt-0" variant="text" block text small :href="props.termsLinks" target="_blank">
+          Terms and Conditions
+        </v-btn>
       </v-container>
 
       <v-divider />
@@ -315,7 +334,6 @@ const phoneRegister = async (event) => {
 
             <v-btn
               type="submit"
-              color="primary"
               icon
               @click="state.phoneConfirmDialog = false"
             >
@@ -328,7 +346,6 @@ const phoneRegister = async (event) => {
             <v-text-field
               v-model="register.phoneCode"
               :rules="[edgeGlobal.edgeRules.required]"
-              color="primary"
               label="Confirmation Code"
               variant="underlined"
             />
@@ -336,7 +353,6 @@ const phoneRegister = async (event) => {
           <v-card-actions>
             <v-spacer />
             <v-btn
-              color="blue-darken-1"
               variant="text"
               @click="state.phoneConfirmDialog = false"
             >
