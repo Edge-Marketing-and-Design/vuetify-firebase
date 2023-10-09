@@ -556,7 +556,7 @@ watch(modelValue, () => {
       :rules="props.rules"
       :clearable="true"
       :label="props.label"
-      :items="Object.values(edgeFirebase.state.users)"
+      :items="Object.values(edgeFirebase.state.users).filter(user => user.userId !== '')"
       v-bind="props.bindings"
       item-title="meta.name"
       item-value="docId"
