@@ -559,7 +559,7 @@ watch(modelValue, () => {
       :items="Object.values(edgeFirebase.state.users).filter(user => user.userId !== '')"
       v-bind="props.bindings"
       item-title="meta.name"
-      item-value="docId"
+      item-value="userId"
       :disabled="props.disabled"
     >
       <template v-if="props.helper" #append>
