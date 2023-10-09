@@ -29,7 +29,7 @@ const copyToClipboard = async (text) => {
   > -->
   <v-icon
     size="small"
-    class="mr-1"
+    class="mx-1"
     @click.stop="copyToClipboard(props.text)"
   >
     {{ state.buttonIcon }}
