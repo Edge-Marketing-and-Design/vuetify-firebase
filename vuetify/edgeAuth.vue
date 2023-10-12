@@ -73,21 +73,46 @@ watch(edgeFirebase.user, async () => {
 </script>
 
 <template>
-  <login
-    v-if="props.type === 'login'"
-    :providers="props.providers"
-  />
-  <register
-    v-else-if="props.type === 'register'"
-    :single-organization="props.singleOrganization"
-    :registration-code="props.registrationCode"
-    :title="props.title"
-    :join-message="props.joinMessage"
-    :providers="props.providers"
-    :terms-links="props.termsLinks"
-    :show-requested-org-id="props.showRequestedOrgId"
-    :requested-org-id-label="props.requestedOrgIdLabel"
-  />
+  <v-container style="height: calc(100vh - 150px); overflow: scroll;" fluid>
+    <v-row align="center" class="fill-height" justify="center">
+      <v-col cols="12" class="center-align">
+        <v-card
+          class="mx-auto fill-height"
+          max-width="500"
+          variant="flat"
+        >
+          <v-container>
+            <v-row
+              class="fill-height"
+              align-content="center"
+              justify="center"
+            >
+              <v-col
+                class="text-center"
+                cols="12"
+              >
+                <login
+                  v-if="props.type === 'login'"
+                  :providers="props.providers"
+                />
+                <register
+                  v-else-if="props.type === 'register'"
+                  :single-organization="props.singleOrganization"
+                  :registration-code="props.registrationCode"
+                  :title="props.title"
+                  :join-message="props.joinMessage"
+                  :providers="props.providers"
+                  :terms-links="props.termsLinks"
+                  :show-requested-org-id="props.showRequestedOrgId"
+                  :requested-org-id-label="props.requestedOrgIdLabel"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style lang="scss" scoped>
