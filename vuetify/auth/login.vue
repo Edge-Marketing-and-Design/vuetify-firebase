@@ -57,7 +57,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <logging-in v-if="edgeFirebase.user.loggingIn || edgeFirebase.user.loggedIn" />
+  <logging-in v-if="edgeFirebase.user.loggingIn !== false || edgeFirebase.user.loggedIn" />
 
   <v-card v-else flat class="mx-auto px-6 py-8" title="Login" max-width="344">
     <v-form
