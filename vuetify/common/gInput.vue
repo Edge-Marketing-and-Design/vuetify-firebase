@@ -934,7 +934,7 @@ watch(modelValue, () => {
                           Modified from "{{ originalCompare }}"
                         </v-col>
                         <v-col cols="4" class="text-right">
-                          <v-btn variant="text" class="ml-8" size="x-small" @click="modelValue[index] = edgeGlobal.edgeState.changeTracker[state.trackerKey][state.objectListOriginalOrder[element.id]]">
+                          <v-btn variant="tonal" class="ml-8" size="x-small" @click="modelValue[index] = edgeGlobal.edgeState.changeTracker[state.trackerKey][state.objectListOriginalOrder[element.id]]">
                             Undo
                           </v-btn>
                           <!-- <v-btn v-else variant="text" class="ml-8" size="x-small" @click="modelValue = edgeState.changeTracker[state.trackerKey]">
@@ -967,7 +967,7 @@ watch(modelValue, () => {
             <v-col>
               {{ props.label }} has been modified
             </v-col>
-            <v-btn variant="text" color="primary" class="ml-8" size="x-small" @click="undo()">
+            <v-btn variant="tonal" class="ml-8" size="x-small" @click="undo()">
               Undo All
             </v-btn>
           </template>
@@ -987,7 +987,7 @@ watch(modelValue, () => {
               Modified from "{{ originalCompare }}" to "{{ modelValue }}"
             </v-col>
             <v-col cols="4" class="text-right">
-              <v-btn variant="text" color="primary" class="ml-8" size="x-small" @click="undo()">
+              <v-btn variant="tonal" class="ml-8" size="x-small" @click="undo()">
                 Undo
               </v-btn>
             </v-col>
