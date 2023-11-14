@@ -22,6 +22,8 @@ const state = reactive({
   phoneConfirmDialog: false,
   phoneNumber: null,
   phoneCode: '',
+  forgotPasswordDialog: false,
+  passwordResetResult: { success: null, message: '' },
 })
 
 const multipleProviders = computed(() => props.providers.length > 1)
@@ -40,7 +42,13 @@ const sendPhoneCode = async () => {
 
 const phoneLogin = async () => {
   await edgeFirebase.logInWithPhone(state.phoneNumber, state.phoneCode)
-  state.phoneConfirmDialog = false
+}
+
+const submitForgotPassword = async () => {
+  console.log(login.email)
+  const result = await edgeFirebase.sendPasswordReset(login.email)
+  state.passwordResetResult = result
+  state.forgotPasswordDialog = false
 }
 
 const onSubmit = async () => {
@@ -105,6 +113,16 @@ onMounted(() => {
               >
                 Sign In
               </v-btn>
+              <v-btn
+                v-if="provider === 'email'"
+                class="mt-4"
+                color="primary"
+                text
+                block
+                @click="state.forgotPasswordDialog = true"
+              >
+                Forgot Password?
+              </v-btn>
             </template>
             <template v-if="provider === 'phone'">
               <g-input
@@ -141,6 +159,66 @@ onMounted(() => {
     <v-btn color="success" small block to="/app/signup">
       Sign up here.
     </v-btn>
+    <v-dialog
+      v-model="state.forgotPasswordDialog"
+      persistent
+      max-width="600"
+      transition="fade-transition"
+    >
+      <v-card>
+        <v-form
+          v-model="state.form2"
+          validate-on="submit"
+          @submit.prevent="submitForgotPassword"
+        >
+          <v-toolbar flat>
+            <v-icon class="mx-4">
+              mdi-lock-reset
+            </v-icon>
+            Forgot Password
+            <v-spacer />
+
+            <v-btn
+              icon
+              @click="state.forgotPasswordDialog = false"
+            >
+              <v-icon> mdi-close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <p class="mb-2">
+              If you forgot your password, please enter your email address below and click "Send Password Reset".
+            </p>
+            <p>If you entered the correct email, you will receive an email with a link to reset your password.</p>
+            <v-text-field
+              v-model="login.email"
+              class="mt-4"
+              :rules="[edgeGlobal.edgeRules.required]"
+              label="Email"
+              variant="underlined"
+            />
+            <g-error v-if="state.passwordResetResult.success === false" :error="state.passwordResetResult.message" />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              color="blue-darken-1"
+              variant="text"
+              @click="state.forgotPasswordDialog = false"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              type="submit"
+              color="error"
+              variant="text"
+            >
+              Send Password Reset
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
     <v-dialog
       v-model="state.phoneConfirmDialog"
       persistent
