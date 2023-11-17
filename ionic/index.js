@@ -1,8 +1,0 @@
-export { default as EdgeAuth } from './edgeAuth.vue'
-export { default as EdgeMyAccount } from './edgeMyAccount.vue'
-export { default as EdgeMyOrganizations } from './edgeMyOrganizations.vue'
-export { default as EdgeMyProfile } from './edgeMyProfile.vue'
-export { default as EdgeOrganizationMembers } from './edgeOrganizationMembers.vue'
-export { default as EdgeOrganizationSettings } from './edgeOrganizationSettings.vue'
-export { default as EdgeOrgSwitcher } from './edgeOrgSwitcher.vue'
-export { default as EdgeError } from './edgeError.vue'

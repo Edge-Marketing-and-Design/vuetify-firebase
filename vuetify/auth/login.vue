@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, inject, onMounted, reactive } from 'vue'
+import { computed, defineProps, inject, onMounted, reactive } from 'vue'
 
 const props = defineProps({
   providers: {

@@ -1,7 +1,7 @@
 <script setup>
 // TODO: PHONE LOGIN NEXT
 // TODO:  Cannot click "Add Organization" or "Join Organization" because of generateShortId error
-import { defineProps, inject, onMounted, reactive } from 'vue'
+import { computed, defineProps, inject, onMounted, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps({
